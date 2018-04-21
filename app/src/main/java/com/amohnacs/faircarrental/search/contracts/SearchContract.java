@@ -1,4 +1,4 @@
-package com.amohnacs.faircarrental.search;
+package com.amohnacs.faircarrental.search.contracts;
 
 import android.support.annotation.StringRes;
 import android.widget.EditText;
@@ -12,18 +12,7 @@ import java.util.List;
  * Created by adrianmohnacs on 4/20/18.
  */
 
-public interface Contract {
-
-    interface Provider {
-
-        void carSearch(Callback callback, String addressQueryString, String pickupSelection, String dropoffSelection);
-
-        interface Callback {
-
-            void onCarSearchResults(List<Result> carResults);
-            void onCarSearchResultError(String errorMessage);
-        }
-    }
+public interface SearchContract {
 
     interface Presenter {
 
@@ -40,5 +29,7 @@ public interface Contract {
         void displayDateSelection(String dialogIdentifier, String dateString);
 
         void searchParamError(@StringRes int messageRes);
+
+        void validInputsLaunchFragment(String addressQueryString, String pickupSelection, String dropoffSelection);
     }
 }

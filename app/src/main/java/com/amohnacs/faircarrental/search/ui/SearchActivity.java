@@ -1,18 +1,16 @@
-package com.amohnacs.faircarrental.search;
+package com.amohnacs.faircarrental.search.ui;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +20,10 @@ import android.widget.TextView;
 
 import com.amohnacs.common.mvp.MvpActivity;
 import com.amohnacs.faircarrental.R;
+import com.amohnacs.faircarrental.search.contracts.SearchContract;
+import com.amohnacs.faircarrental.search.SearchPresenter;
+import com.amohnacs.faircarrental.search.contracts.SearchResultsContract;
+import com.amohnacs.model.Result;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.Calendar;
@@ -29,7 +31,8 @@ import java.util.Calendar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SearchActivity extends MvpActivity<SearchPresenter, Contract.View> implements Contract.View, DatePickerDialog.OnDateSetListener {
+public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.View> implements SearchContract.View,
+        DatePickerDialog.OnDateSetListener, SearchResultsFragment.OnListFragmentInteractionListener {
     private static final String TAG = SearchActivity.class.getSimpleName();
 
     public static final String PICKUP_DIALOG = "pickup_dialog";
@@ -67,6 +70,12 @@ public class SearchActivity extends MvpActivity<SearchPresenter, Contract.View> 
 
         ButterKnife.bind(this);
         presenter = SearchPresenter.getInstance(this);
+
+        SearchResultsFragment frag = SearchResultsFragment.newInstance(1);
+        FragmentTransaction tr = getSupportFragmentManager().beginTransaction();
+        tr.replace(R.id.fragment_container, frag, SearchResultsFragment.TAG);
+        tr.addToBackStack(null);
+        tr.commit();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -134,7 +143,7 @@ public class SearchActivity extends MvpActivity<SearchPresenter, Contract.View> 
     }
 
     @Override
-    public Contract.View getMvpView() {
+    public SearchContract.View getMvpView() {
         return this;
     }
 
@@ -143,8 +152,12 @@ public class SearchActivity extends MvpActivity<SearchPresenter, Contract.View> 
         if (isValid) {
             addressWrapper.setErrorEnabled(false);
         } else {
-            addressWrapper.setError(getString(R.string.address_error));
-            addressEditText.requestFocus();
+            try {
+                addressWrapper.setError(getString(R.string.address_error));
+                addressEditText.requestFocus();
+            } catch (UnsupportedOperationException e) { //offset error thrown with backspaces
+                e.printStackTrace();
+            }
         }
     }
 
@@ -179,8 +192,20 @@ public class SearchActivity extends MvpActivity<SearchPresenter, Contract.View> 
     }
 
     @Override
+    public void validInputsLaunchFragment(String addressQueryString, String pickupSelection, String dropoffSelection) {
+        SearchResultsFragment fragment = (SearchResultsFragment) getSupportFragmentManager().findFragmentByTag(SearchResultsFragment.TAG);
+        getSupportFragmentManager().executePendingTransactions();
+        fragment.makeCarResultsRequest(addressQueryString, pickupSelection, dropoffSelection);
+    }
+
+    @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         presenter.onDateSetChecker(view, year, monthOfYear, dayOfMonth);
+    }
+
+    @Override
+    public void onListFragmentInteraction(Result item) {
+
     }
 
     /**

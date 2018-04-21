@@ -1,0 +1,25 @@
+<resources>
+    <!--
+    TODO: Before you run your application, you need a Google Maps API key.
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=F3:87:5C:6E:F4:5B:B4:3A:E9:C1:2E:53:09:1B:D6:9E:09:05:75:BF%3Bcom.amohnacs.faircarrental
+
+    You can also add your credentials to an existing key, using these values:
+
+    Package name:
+    F3:87:5C:6E:F4:5B:B4:3A:E9:C1:2E:53:09:1B:D6:9E:09:05:75:BF
+
+    SHA-1 certificate fingerprint:
+    F3:87:5C:6E:F4:5B:B4:3A:E9:C1:2E:53:09:1B:D6:9E:09:05:75:BF
+
+    Alternatively, follow the directions here:
+    https://developers.google.com/maps/documentation/android/start#get-key
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <!-- The google maps API would usually be hidden in the private gradle.properties folder.  We are making it accessible here for ease of testing by the devs at Fair -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDWhoy8mcw1IVIXSf67hY6yQVP0Qg3LZVE</string>
+</resources>
