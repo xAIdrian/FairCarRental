@@ -26,7 +26,8 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorAccent"
             android:drawableStart="@drawable/ic_map_marker_accent"
-            android:hint="@string/address_hint" />
+            android:hint="@string/address_hint"
+            android:textColor="@color/colorAccent"/>
 
     </android.support.design.widget.TextInputLayout>
 

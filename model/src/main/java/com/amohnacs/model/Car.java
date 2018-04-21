@@ -9,14 +9,16 @@ class Car {
     private VehicleInfo vehicleInfo;
     private Rates rates;
     private EstimatedTotal estimatedTotal;
+    private Image image;
 
     public Car() {
     }
 
-    public Car(VehicleInfo vehicleInfo, Rates rates, EstimatedTotal estimatedTotal) {
+    public Car(VehicleInfo vehicleInfo, Rates rates, EstimatedTotal estimatedTotal, Image image) {
         this.vehicleInfo = vehicleInfo;
         this.rates = rates;
         this.estimatedTotal = estimatedTotal;
+        this.image = image;
     }
 
     public VehicleInfo getVehicleInfo() {
@@ -41,5 +43,13 @@ class Car {
 
     public void setEstimatedTotal(EstimatedTotal estimatedTotal) {
         this.estimatedTotal = estimatedTotal;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
     }
 }

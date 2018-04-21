@@ -5,22 +5,21 @@ import android.util.Log;
 
 import com.amohnacs.common.mvp.BasePresenter;
 import com.amohnacs.faircarrental.R;
-import com.amohnacs.model.Result;
+import com.amohnacs.faircarrental.search.contracts.SearchContract;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
-import static com.amohnacs.faircarrental.search.SearchActivity.DROPOFF_DIALOG;
-import static com.amohnacs.faircarrental.search.SearchActivity.PICKUP_DIALOG;
+import static com.amohnacs.faircarrental.search.ui.SearchActivity.DROPOFF_DIALOG;
+import static com.amohnacs.faircarrental.search.ui.SearchActivity.PICKUP_DIALOG;
 
 /**
  * Created by adrianmohnacs on 4/20/18.
  */
 
-public class SearchPresenter extends BasePresenter<Contract.View> implements Contract.Presenter, Contract.Provider.Callback {
+public class SearchPresenter extends BasePresenter<SearchContract.View> implements SearchContract.Presenter {
     private static final String TAG = SearchPresenter.class.getSimpleName();
 
     private static volatile SearchPresenter instance;
@@ -36,12 +35,10 @@ public class SearchPresenter extends BasePresenter<Contract.View> implements Con
     private Date pickupDate;
     private Date dropoffDate;
     private String addressQueryString;
-    private SearchProvider provider;
+    private CarSearchProvider provider;
 
     private SearchPresenter(Context context) {
         this.context = context;
-
-        provider = SearchProvider.getInstance(context);
 
         stringQueryFormat = new SimpleDateFormat("yyyy-MM-dd");
         todaysDate = new Date();
@@ -78,8 +75,9 @@ public class SearchPresenter extends BasePresenter<Contract.View> implements Con
 
     @Override
     public void onDateSetChecker(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        int offsetZeroIndexMonth = monthOfYear + 1;
         String dateQueryString =
-                year + "-" + (monthOfYear < 10 ? DATE_HELPER_ZERO + monthOfYear : monthOfYear) + "-"
+                year + "-" + (offsetZeroIndexMonth < 10 ? DATE_HELPER_ZERO + offsetZeroIndexMonth : offsetZeroIndexMonth) + "-"
                         + (dayOfMonth < 10 ? DATE_HELPER_ZERO + dayOfMonth : dayOfMonth);
         //chaning our string to a date
         Date selectedDate = new Date();
@@ -116,34 +114,26 @@ public class SearchPresenter extends BasePresenter<Contract.View> implements Con
                 if (isViewAttached()) {
                     getMvpView().searchParamError(R.string.pickup_before_today);
                 }
-            } else if (dropoffDate.after(pickupDate)) {
+            } else if (!dropoffDate.after(pickupDate)) {
                 //check to see if date is before pickupdate
                 if (isViewAttached()) {
                     getMvpView().searchParamError(R.string.pickup_after_dropoff);
                 }
-            } else if (!addressIsValid && addressQueryString != null) {
+            } else if (!addressIsValid || addressQueryString == null || addressQueryString.isEmpty()) {
                 //ensuring address is valid
                 if(isViewAttached()) {
                     getMvpView().searchParamError(R.string.invalid_address);
                 }
             } else {
                 //success case
-                provider.carSearch(this, addressQueryString, pickupSelection, dropoffSelection);
+                if (isViewAttached()) {
+                    getMvpView().validInputsLaunchFragment(addressQueryString, pickupSelection, dropoffSelection);
+                }
             }
         } else {
             if (isViewAttached()) {
                 getMvpView().searchParamError(R.string.date_missing_error);
             }
         }
-    }
-
-    @Override
-    public void onCarSearchResults(List<Result> carResults) {
-
-    }
-
-    @Override
-    public void onCarSearchResultError(String errorMessage) {
-
     }
 }
