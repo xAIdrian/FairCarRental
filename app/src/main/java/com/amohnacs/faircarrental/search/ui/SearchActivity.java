@@ -1,6 +1,7 @@
 package com.amohnacs.faircarrental.search.ui;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -22,7 +23,6 @@ import com.amohnacs.common.mvp.MvpActivity;
 import com.amohnacs.faircarrental.R;
 import com.amohnacs.faircarrental.search.contracts.SearchContract;
 import com.amohnacs.faircarrental.search.SearchPresenter;
-import com.amohnacs.faircarrental.search.contracts.SearchResultsContract;
 import com.amohnacs.model.Result;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -61,7 +61,8 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
 
     private SearchPresenter presenter;
 
-    Calendar calendar;
+    private Calendar calendar;
+    private boolean datePickerActive = false; //datepickerdialog is a little laggy in emulator
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,28 +93,20 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
         });
 
         dropoffButton.setOnClickListener((view) -> {
-            showDatePickerDialog(DROPOFF_DIALOG);
+            if (!datePickerActive) {
+                showDatePickerDialog(DROPOFF_DIALOG);
+                datePickerActive = true;
+            }
         });
 
         fab.setOnClickListener((view) -> {
-            presenter.validateInputsForSearch();
+            if (!datePickerActive) {
+                presenter.validateInputsForSearch();
+                datePickerActive = true;
+            }
         });
 
         addressEditText.addTextChangedListener(new SearchTextValidator(addressEditText));
-    }
-
-    private void showDatePickerDialog(String tag) {
-        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
-                this,
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-        );
-        datePickerDialog.setAccentColor(ContextCompat.getColor(this, R.color.colorPrimary));
-        datePickerDialog.vibrate(true);
-        datePickerDialog.dismissOnPause(true);
-
-        datePickerDialog.show(getFragmentManager(), tag);
     }
 
     @Override
@@ -200,12 +193,29 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        datePickerActive = false;
         presenter.onDateSetChecker(view, year, monthOfYear, dayOfMonth);
     }
 
     @Override
     public void onListFragmentInteraction(Result item) {
 
+    }
+
+    private void showDatePickerDialog(String tag) {
+        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
+                this,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
+        datePickerDialog.setOnCancelListener(dialog -> datePickerActive = false);
+        datePickerDialog.setOnDismissListener(dialog -> datePickerActive = false);
+        datePickerDialog.setAccentColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        datePickerDialog.vibrate(true);
+        datePickerDialog.dismissOnPause(true);
+
+        datePickerDialog.show(getFragmentManager(), tag);
     }
 
     /**
