@@ -28,4 +28,8 @@ public class SearchProvider implements Contract.Provider {
         return instance;
     }
 
+    @Override
+    public void carSearch(Callback callback, String addressQueryString, String pickupSelection, String dropoffSelection) {
+
+    }
 }

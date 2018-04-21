@@ -73,16 +73,18 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/colorAccent"
-            android:gravity="center"/>
+            android:textColor="@color/secondaryText"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <TextView
             android:id="@+id/dropoff_result_textView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/colorAccent"
-            android:gravity="center"/>
+            android:textColor="@color/secondaryText"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     </LinearLayout>
 

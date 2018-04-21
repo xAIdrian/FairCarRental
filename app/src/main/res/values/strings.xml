@@ -7,4 +7,11 @@
     <string name="pickup_date">Pickup Date</string>
     <string name="dropoff_date">Drop-Off Date</string>
     <string name="address_error">Address input is not valid</string>
+    <string name="param_error_title">Oops!</string>
+    <string name="date_missing_error">Looks like you forgot to enter your Pickup or Drop-off dates!</string>
+    <string name="ok">OK</string>
+    <string name="cancel">CANCEL</string>
+    <string name="pickup_before_today">Unfortunately, time travel isn\'t possible yet.  You can\'t pickup the car before tomorrow\'s date</string>
+    <string name="pickup_after_dropoff">You need your car before you can drop it off.  Your selected pickup date is after the drop-off date.</string>
+    <string name="invalid_address">This location doesn\'t exist :/</string>
 </resources>
