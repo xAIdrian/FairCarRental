@@ -1,4 +1,6 @@
-package com.amohnacs.model;
+package com.amohnacs.model.amadeus;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by adrianmohnacs on 4/20/18.
@@ -6,11 +8,17 @@ package com.amohnacs.model;
 
 class VehicleInfo {
 
+    @SerializedName("acriss_code")
     private String acrissCode;
+    @SerializedName("transmission")
     private String transmission;
+    @SerializedName("fuel")
     private String fuel;
+    @SerializedName("air_conditioning")
     private boolean airConditioning;
+    @SerializedName("category")
     private String category;
+    @SerializedName("type")
     private String type;
 
     public VehicleInfo() {

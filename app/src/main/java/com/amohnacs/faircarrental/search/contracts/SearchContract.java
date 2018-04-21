@@ -1,12 +1,8 @@
 package com.amohnacs.faircarrental.search.contracts;
 
 import android.support.annotation.StringRes;
-import android.widget.EditText;
 
-import com.amohnacs.model.Result;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-
-import java.util.List;
 
 /**
  * Created by adrianmohnacs on 4/20/18.

@@ -1,7 +1,6 @@
 package com.amohnacs.faircarrental.search.ui;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -23,7 +22,7 @@ import com.amohnacs.common.mvp.MvpActivity;
 import com.amohnacs.faircarrental.R;
 import com.amohnacs.faircarrental.search.contracts.SearchContract;
 import com.amohnacs.faircarrental.search.SearchPresenter;
-import com.amohnacs.model.Result;
+import com.amohnacs.model.amadeus.AmadeusResult;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.Calendar;
@@ -198,7 +197,7 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
     }
 
     @Override
-    public void onListFragmentInteraction(Result item) {
+    public void onListFragmentInteraction(AmadeusResult item) {
 
     }
 

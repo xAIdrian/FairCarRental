@@ -1,4 +1,6 @@
-package com.amohnacs.model;
+package com.amohnacs.model.amadeus;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by adrianmohnacs on 4/20/18.
@@ -6,7 +8,9 @@ package com.amohnacs.model;
 
 public class Location {
 
+    @SerializedName("latitude")
     private float latitude;
+    @SerializedName("longitude")
     private float longitude;
 
     public Location() {

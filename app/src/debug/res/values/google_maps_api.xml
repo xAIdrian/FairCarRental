@@ -21,5 +21,5 @@
     string in this file.
     -->
     <!-- The google maps API would usually be hidden in the private gradle.properties folder.  We are making it accessible here for ease of testing by the devs at Fair -->
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDWhoy8mcw1IVIXSf67hY6yQVP0Qg3LZVE</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyASjteFYXTX6YbNdq8V6EfWgWo03nIcWG4</string>
 </resources>

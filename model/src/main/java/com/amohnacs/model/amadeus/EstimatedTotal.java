@@ -1,18 +1,22 @@
-package com.amohnacs.model;
+package com.amohnacs.model.amadeus;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by adrianmohnacs on 4/20/18.
  */
 
-class Price {
+class EstimatedTotal {
 
+    @SerializedName("amount")
     private float amount;
+    @SerializedName("currency")
     private String currency;
 
-    public Price() {
+    public EstimatedTotal() {
     }
 
-    public Price(float amount, String currency) {
+    public EstimatedTotal(float amount, String currency) {
         this.amount = amount;
         this.currency = currency;
     }

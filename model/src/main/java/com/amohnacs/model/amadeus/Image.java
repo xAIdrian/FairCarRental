@@ -1,4 +1,6 @@
-package com.amohnacs.model;
+package com.amohnacs.model.amadeus;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by adrianmohnacs on 4/21/18.
@@ -6,8 +8,11 @@ package com.amohnacs.model;
 
 public class Image {
 
+    @SerializedName("width")
     private int width;
+    @SerializedName("height")
     private int height;
+    @SerializedName("url")
     private String url;
 
     public Image() {

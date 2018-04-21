@@ -1,11 +1,10 @@
 package com.amohnacs.faircarrental.search;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.amohnacs.common.mvp.BasePresenter;
 import com.amohnacs.faircarrental.search.contracts.SearchResultsContract;
-import com.amohnacs.model.Result;
+import com.amohnacs.model.amadeus.AmadeusResult;
 
 import java.util.List;
 
@@ -19,9 +18,11 @@ public class SearchResultsPresenter extends BasePresenter<SearchResultsContract.
     private static volatile SearchResultsPresenter instance;
 
     private Context context;
+    private CarSearchProvider provider;
 
     private SearchResultsPresenter(Context context) {
         this.context = context;
+        provider = CarSearchProvider.getInstance(context);
     }
 
     public static SearchResultsPresenter getInstance(Context context) {
@@ -38,11 +39,12 @@ public class SearchResultsPresenter extends BasePresenter<SearchResultsContract.
 
     @Override
     public void getCars(String addressQueryString, String pickupSelection, String dropoffSelection) {
-
+        String apiFriendlyAddress = addressQueryString.replace(" ", " +");
+        provider.carSearch(this, apiFriendlyAddress, pickupSelection, dropoffSelection);
     }
 
     @Override
-    public void onCarSearchResults(List<Result> carResults) {
+    public void onCarSearchResults(List<AmadeusResult> carResults) {
 
     }
 

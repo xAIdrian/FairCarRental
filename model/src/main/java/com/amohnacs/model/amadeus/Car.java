@@ -1,4 +1,8 @@
-package com.amohnacs.model;
+package com.amohnacs.model.amadeus;
+
+import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 /**
  * Created by adrianmohnacs on 4/20/18.
@@ -6,15 +10,19 @@ package com.amohnacs.model;
 
 class Car {
 
+    @SerializedName("vehicle_info")
     private VehicleInfo vehicleInfo;
-    private Rates rates;
+    @SerializedName("rates")
+    private List<Rate> rates;
+    @SerializedName("estimated_total")
     private EstimatedTotal estimatedTotal;
+    @SerializedName("image")
     private Image image;
 
     public Car() {
     }
 
-    public Car(VehicleInfo vehicleInfo, Rates rates, EstimatedTotal estimatedTotal, Image image) {
+    public Car(VehicleInfo vehicleInfo, List<Rate> rates, EstimatedTotal estimatedTotal, Image image) {
         this.vehicleInfo = vehicleInfo;
         this.rates = rates;
         this.estimatedTotal = estimatedTotal;
@@ -29,11 +37,11 @@ class Car {
         this.vehicleInfo = vehicleInfo;
     }
 
-    public Rates getRates() {
+    public List<Rate> getRates() {
         return rates;
     }
 
-    public void setRates(Rates rates) {
+    public void setRates(List<Rate> rates) {
         this.rates = rates;
     }
 

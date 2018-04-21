@@ -14,7 +14,7 @@ import com.amohnacs.faircarrental.R;
 import com.amohnacs.faircarrental.search.SearchResultsAdapter;
 import com.amohnacs.faircarrental.search.contracts.SearchResultsContract;
 import com.amohnacs.faircarrental.search.SearchResultsPresenter;
-import com.amohnacs.model.Result;
+import com.amohnacs.model.amadeus.AmadeusResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    private List<Result> resultsList;
+    private List<AmadeusResult> resultsList;
     private SearchResultsPresenter presenter;
 
     /**
@@ -124,6 +124,6 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Result item);
+        void onListFragmentInteraction(AmadeusResult item);
     }
 }

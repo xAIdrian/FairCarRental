@@ -1,4 +1,6 @@
-package com.amohnacs.model;
+package com.amohnacs.model.amadeus;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by adrianmohnacs on 4/20/18.
@@ -6,7 +8,9 @@ package com.amohnacs.model;
 
 public class Provider {
 
+    @SerializedName("company_code")
     private String companyCode;
+    @SerializedName("company_name")
     private String companyName;
 
     public Provider() {

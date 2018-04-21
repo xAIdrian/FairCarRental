@@ -8,16 +8,16 @@ import android.widget.TextView;
 
 import com.amohnacs.faircarrental.R;
 import com.amohnacs.faircarrental.search.ui.SearchResultsFragment.OnListFragmentInteractionListener;
-import com.amohnacs.model.Result;
+import com.amohnacs.model.amadeus.AmadeusResult;
 
 import java.util.List;
 
 public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdapter.ViewHolder> {
 
-    private final List<Result> values;
+    private final List<AmadeusResult> values;
     private final OnListFragmentInteractionListener mListener;
 
-    public SearchResultsAdapter(List<Result> items, OnListFragmentInteractionListener listener) {
+    public SearchResultsAdapter(List<AmadeusResult> items, OnListFragmentInteractionListener listener) {
         values = items;
         mListener = listener;
     }
@@ -58,7 +58,7 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public Result resultItem;
+        public AmadeusResult resultItem;
 
         public ViewHolder(View view) {
             super(view);
