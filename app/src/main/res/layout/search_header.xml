@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/header_margin"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/search_title"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/primaryText" />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/EditTextHint">
+
+        <EditText
+            android:id="@+id/address_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorAccent"
+            android:drawableStart="@drawable/ic_map_marker_accent"
+            android:hint="@string/address_hint" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/EditTextHint">
+
+        <EditText
+            android:id="@+id/pickup_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorAccent"
+            android:drawableStart="@drawable/ic_car_accent"
+            android:hint="@string/pickup_hint" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/EditTextHint">
+
+        <EditText
+            android:id="@+id/dropoff_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorAccent"
+            android:drawableStart="@drawable/ic_airplane_takeoff_accent"
+            android:hint="@string/dropoff_hint" />
+    </android.support.design.widget.TextInputLayout>
+
+</LinearLayout>
