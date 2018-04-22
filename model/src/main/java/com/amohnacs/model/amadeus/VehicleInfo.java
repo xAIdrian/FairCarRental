@@ -1,12 +1,15 @@
 package com.amohnacs.model.amadeus;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by adrianmohnacs on 4/20/18.
  */
 
-class VehicleInfo {
+class VehicleInfo implements Parcelable {
 
     @SerializedName("acriss_code")
     private String acrissCode;
@@ -32,6 +35,27 @@ class VehicleInfo {
         this.category = category;
         this.type = type;
     }
+
+    protected VehicleInfo(Parcel in) {
+        acrissCode = in.readString();
+        transmission = in.readString();
+        fuel = in.readString();
+        airConditioning = in.readByte() != 0;
+        category = in.readString();
+        type = in.readString();
+    }
+
+    public static final Creator<VehicleInfo> CREATOR = new Creator<VehicleInfo>() {
+        @Override
+        public VehicleInfo createFromParcel(Parcel in) {
+            return new VehicleInfo(in);
+        }
+
+        @Override
+        public VehicleInfo[] newArray(int size) {
+            return new VehicleInfo[size];
+        }
+    };
 
     public String getAcrissCode() {
         return acrissCode;
@@ -79,5 +103,20 @@ class VehicleInfo {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(acrissCode);
+        dest.writeString(transmission);
+        dest.writeString(fuel);
+        dest.writeByte((byte) (airConditioning ? 1 : 0));
+        dest.writeString(category);
+        dest.writeString(type);
     }
 }

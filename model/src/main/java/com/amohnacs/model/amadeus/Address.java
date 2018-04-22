@@ -1,12 +1,15 @@
 package com.amohnacs.model.amadeus;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by adrianmohnacs on 4/20/18.
  */
 
-public class Address {
+public class Address implements Parcelable {
 
     @SerializedName("line1")
     private String line1;
@@ -32,6 +35,27 @@ public class Address {
         this.country = country;
         this.postalCode = postalCode;
     }
+
+    protected Address(Parcel in) {
+        line1 = in.readString();
+        line2 = in.readString();
+        city = in.readString();
+        region = in.readString();
+        country = in.readString();
+        postalCode = in.readInt();
+    }
+
+    public static final Creator<Address> CREATOR = new Creator<Address>() {
+        @Override
+        public Address createFromParcel(Parcel in) {
+            return new Address(in);
+        }
+
+        @Override
+        public Address[] newArray(int size) {
+            return new Address[size];
+        }
+    };
 
     public String getLine1() {
         return line1;
@@ -79,5 +103,20 @@ public class Address {
 
     public void setPostalCode(int postalCode) {
         this.postalCode = postalCode;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(line1);
+        dest.writeString(line2);
+        dest.writeString(city);
+        dest.writeString(region);
+        dest.writeString(country);
+        dest.writeInt(postalCode);
     }
 }

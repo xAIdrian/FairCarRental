@@ -32,9 +32,6 @@ public class CarSearchProvider implements SearchResultsContract.Provider {
     private AmadeusClient amadeusClient;
     private WeakReference<Callback> weakCallback;
 
-    float latitude;
-    float longitude;
-
     private CarSearchProvider(Context context) {
         this.context = context;
         mapsClient = RetrofitClientGenerator.generateGoogleMapsClient(GoogleMapsClient.class);
@@ -62,10 +59,8 @@ public class CarSearchProvider implements SearchResultsContract.Provider {
             public void onResponse(Call<GeoCodingResults> call, Response<GeoCodingResults> response) {
                 LatLngLocation location = response.body().getGeoCodingResults().get(0)
                         .getGeometry().getLocation();
-                latitude = location.getLat();
-                longitude = location.getLongg();
 
-                getCarSearchResults(callback, latitude, longitude, pickupSelection, dropoffSelection);
+                getCarSearchResults(callback, location, pickupSelection, dropoffSelection);
             }
 
             @Override
@@ -75,22 +70,32 @@ public class CarSearchProvider implements SearchResultsContract.Provider {
         });
     }
 
-    public void getCarSearchResults(Callback callback, float latitude, float longitude, String pickupSelection, String dropoffSelection) {
+    private void getCarSearchResults(Callback callback, LatLngLocation location, String pickupSelection, String dropoffSelection) {
         weakCallback = new WeakReference<>(callback);
 
         String key = BuildConfig.ApiKey;
         Call<AmadeusResults> call = amadeusClient.getSearchResult(BuildConfig.ApiKey,
-                latitude, longitude, 42, pickupSelection, dropoffSelection);
+                location.getLat(), location.getLongg(), 42, pickupSelection, dropoffSelection);
 
         call.enqueue(new retrofit2.Callback<AmadeusResults>() {
             @Override
             public void onResponse(Call<AmadeusResults> call, Response<AmadeusResults> response) {
-                AmadeusResults results = response.body();
+                if (response.isSuccessful() && response.body() != null) {
+                    if (weakCallback != null) {
+                        weakCallback.get().onCarSearchResults(location, response.body().getAmadeusResults());
+                    }
+                } else {
+                    if (weakCallback != null) {
+                        weakCallback.get().onCarSearchResultError("Response not successful");
+                    }
+                }
             }
 
             @Override
             public void onFailure(Call<AmadeusResults> call, Throwable t) {
-                t.printStackTrace();
+                if (weakCallback != null) {
+                    weakCallback.get().onCarSearchResultError(t.getMessage());
+                }
             }
         });
     }

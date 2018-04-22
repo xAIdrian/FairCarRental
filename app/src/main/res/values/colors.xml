@@ -11,4 +11,6 @@
 
     <color name="transparent">@android:color/transparent</color>
     <color name="white">@android:color/white</color>
+
+    <color name="money_be_green">#388E3C</color>
 </resources>

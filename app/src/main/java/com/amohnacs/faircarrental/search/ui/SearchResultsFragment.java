@@ -2,6 +2,8 @@ package com.amohnacs.faircarrental.search.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +13,7 @@ import android.view.ViewGroup;
 
 import com.amohnacs.common.mvp.MvpFragment;
 import com.amohnacs.faircarrental.R;
-import com.amohnacs.faircarrental.search.SearchResultsAdapter;
+import com.amohnacs.faircarrental.search.ResultsAdapter;
 import com.amohnacs.faircarrental.search.contracts.SearchResultsContract;
 import com.amohnacs.faircarrental.search.SearchResultsPresenter;
 import com.amohnacs.model.amadeus.AmadeusResult;
@@ -33,6 +35,7 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
     private OnListFragmentInteractionListener mListener;
     private List<AmadeusResult> resultsList;
     private SearchResultsPresenter presenter;
+    private ResultsAdapter adapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -59,10 +62,11 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
 
         resultsList = new ArrayList<>();
         presenter = SearchResultsPresenter.getInstance(getActivity());
+        adapter = new ResultsAdapter(resultsList, mListener, getActivity(), presenter);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search_results_fragment, container, false);
 
@@ -75,7 +79,12 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new SearchResultsAdapter(resultsList, mListener));
+            if (getActivity() != null) {
+                recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+            }
+
+            recyclerView.setAdapter(adapter);
+
         }
         return view;
     }
@@ -110,6 +119,18 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
 
     protected void makeCarResultsRequest(String addressQueryString, String pickupSelection, String dropoffSelection) {
         presenter.getCars(addressQueryString, pickupSelection, dropoffSelection);
+    }
+
+    @Override
+    public void updateCarSearchResults(List<AmadeusResult> carResults) {
+        if (resultsList.size() > 0) {
+            resultsList.clear();
+        }
+        resultsList.addAll(carResults);
+
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
     /**

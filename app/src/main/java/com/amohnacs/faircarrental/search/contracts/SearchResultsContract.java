@@ -1,6 +1,7 @@
 package com.amohnacs.faircarrental.search.contracts;
 
 import com.amohnacs.model.amadeus.AmadeusResult;
+import com.amohnacs.model.googlemaps.LatLngLocation;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface SearchResultsContract {
 
         interface Callback {
 
-            void onCarSearchResults(List<AmadeusResult> carResults);
+            void onCarSearchResults(LatLngLocation userLocation, List<AmadeusResult> carResults);
             void onCarSearchResultError(String errorMessage);
         }
     }
@@ -28,5 +29,6 @@ public interface SearchResultsContract {
 
     interface View {
 
+        void updateCarSearchResults(List<AmadeusResult> carResults);
     }
 }
