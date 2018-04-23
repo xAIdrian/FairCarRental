@@ -17,7 +17,8 @@ import android.view.ViewGroup;
 
 import com.amohnacs.common.mvp.MvpFragment;
 import com.amohnacs.faircarrental.R;
-import com.amohnacs.faircarrental.search.ResultsAdapter;
+import com.amohnacs.faircarrental.detail.DetailActivity;
+import com.amohnacs.faircarrental.search.CarAdapter;
 import com.amohnacs.faircarrental.search.contracts.SearchResultsContract;
 import com.amohnacs.faircarrental.search.SearchResultsPresenter;
 import com.amohnacs.model.amadeus.Car;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
  * interface.
  */
 public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, SearchResultsContract.View>
-        implements SearchResultsContract.View {
+        implements SearchResultsContract.View, CarAdapter.RecyclerClickListener {
     public static final String TAG = SearchResultsFragment.class.getSimpleName();
 
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -40,7 +41,7 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
     private OnListFragmentInteractionListener callbackToActivity;
     private ArrayList<Car> carList;
     private SearchResultsPresenter presenter;
-    private ResultsAdapter adapter;
+    private CarAdapter adapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -72,7 +73,7 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
         }
 
         presenter = SearchResultsPresenter.getInstance(getActivity());
-        adapter = new ResultsAdapter(carList, callbackToActivity, getActivity(), presenter);
+        adapter = new CarAdapter(carList, this, getActivity(), presenter);
     }
 
     @Override
@@ -94,6 +95,7 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
             }
 
             recyclerView.setAdapter(adapter);
+
             //alleviates the stopping of the fling action when the user ACTION_UP
             ViewCompat.setNestedScrollingEnabled(recyclerView, false);
         }
@@ -187,6 +189,11 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
 
     private void buildSnackBar(@StringRes @NonNull int stringRes) {
         Snackbar.make(getView(), getActivity().getString(stringRes), Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onItemClick(Car car) {
+        startActivity(DetailActivity.getStartIntent(getActivity(), car));
     }
 
     /**

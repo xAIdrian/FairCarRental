@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.amohnacs.faircarrental.R;
 import com.amohnacs.faircarrental.MyUtils;
-import com.amohnacs.faircarrental.search.ui.SearchResultsFragment.OnListFragmentInteractionListener;
 import com.amohnacs.model.amadeus.Address;
 import com.amohnacs.model.amadeus.Car;
 import com.amohnacs.model.amadeus.AmadeusLocation;
@@ -24,20 +23,20 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.CarResultViewHolder> {
+public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarResultViewHolder> {
 
     private static final String DISTANCE_PREPEND = "Distance : ";
     private static final String PRICE_PREPEND = "Price : ";
 
     private final List<Car> values;
-    private final OnListFragmentInteractionListener mListener;
+    private final RecyclerClickListener recyclerClickListener;
     private final Context context;
     private final SearchResultsPresenter presenter;
 
-    public ResultsAdapter(ArrayList<Car> items, OnListFragmentInteractionListener listener,
-                          Context context, SearchResultsPresenter presenter) {
+    public CarAdapter(ArrayList<Car> items, RecyclerClickListener listener,
+                      Context context, SearchResultsPresenter presenter) {
         values = items;
-        mListener = listener;
+        recyclerClickListener = listener;
         this.context = context;
         this.presenter = presenter;
     }
@@ -46,7 +45,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.CarResul
     public CarResultViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.search_results_fragment_item, parent, false);
-        return new CarResultViewHolder(view, context);
+        return new CarResultViewHolder(view);
     }
 
     @Override
@@ -103,11 +102,13 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.CarResul
         @BindView(R.id.price_textView)
         TextView priceTextView;
 
-        CarResultViewHolder(View view, Context context) {
+        CarResultViewHolder(View view) {
             super(view);
 
             ButterKnife.bind(this, view);
 
+            view.setOnClickListener(v ->
+                    recyclerClickListener.onItemClick(values.get(getAdapterPosition())));
         }
 
         void setTitle(String title) {
@@ -129,5 +130,9 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.CarResul
         void setPrice(String price) {
             priceTextView.setText(price);
         }
+    }
+
+    public interface RecyclerClickListener {
+        void onItemClick(Car car);
     }
 }
