@@ -59,6 +59,7 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
     FloatingActionButton fab;
 
     private SearchPresenter presenter;
+    private SearchResultsFragment searchResultFragment;
 
     private Calendar calendar;
     private boolean datePickerActive = false; //datepickerdialog is a little laggy in emulator
@@ -71,11 +72,14 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
         ButterKnife.bind(this);
         presenter = SearchPresenter.getInstance(this);
 
-        SearchResultsFragment frag = SearchResultsFragment.newInstance(1);
-        FragmentTransaction tr = getSupportFragmentManager().beginTransaction();
-        tr.replace(R.id.fragment_container, frag, SearchResultsFragment.TAG);
-        tr.addToBackStack(null);
-        tr.commit();
+        SearchResultsFragment fragment = (SearchResultsFragment) getSupportFragmentManager().findFragmentByTag(SearchResultsFragment.TAG);
+        if (fragment == null) {
+            searchResultFragment = SearchResultsFragment.newInstance(1);
+            FragmentTransaction tr = getSupportFragmentManager().beginTransaction();
+            tr.replace(R.id.fragment_container, searchResultFragment, SearchResultsFragment.TAG);
+            tr.addToBackStack(null);
+            tr.commit();
+        }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

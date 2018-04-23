@@ -7,6 +7,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +32,10 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
     public static final String TAG = SearchResultsFragment.class.getSimpleName();
 
     private static final String ARG_COLUMN_COUNT = "column-count";
+    private static final String AMADEUS_RESULTS_BUNDLE = "amadeus_results_bundle";
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    private List<AmadeusResult> resultsList;
+    private ArrayList<AmadeusResult> resultsList;
     private SearchResultsPresenter presenter;
     private ResultsAdapter adapter;
 
@@ -56,11 +58,17 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+        resultsList = new ArrayList<>();
+
+        if (savedInstanceState == null || !savedInstanceState.containsKey(AMADEUS_RESULTS_BUNDLE)) {
+            if (getArguments() != null) {
+                mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            }
+        } else {
+            ArrayList<AmadeusResult> temp = savedInstanceState.getParcelableArrayList(AMADEUS_RESULTS_BUNDLE);
+            resultsList.addAll(temp);
         }
 
-        resultsList = new ArrayList<>();
         presenter = SearchResultsPresenter.getInstance(getActivity());
         adapter = new ResultsAdapter(resultsList, mListener, getActivity(), presenter);
     }
@@ -89,6 +97,11 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
         return view;
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelableArrayList(AMADEUS_RESULTS_BUNDLE, resultsList);
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     public void onAttach(Context context) {
