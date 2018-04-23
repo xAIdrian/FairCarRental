@@ -3,11 +3,11 @@ package com.amohnacs.faircarrental.search.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +17,9 @@ import com.amohnacs.faircarrental.R;
 import com.amohnacs.faircarrental.search.ResultsAdapter;
 import com.amohnacs.faircarrental.search.contracts.SearchResultsContract;
 import com.amohnacs.faircarrental.search.SearchResultsPresenter;
-import com.amohnacs.model.amadeus.AmadeusResult;
+import com.amohnacs.model.amadeus.Car;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -32,10 +31,10 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
     public static final String TAG = SearchResultsFragment.class.getSimpleName();
 
     private static final String ARG_COLUMN_COUNT = "column-count";
-    private static final String AMADEUS_RESULTS_BUNDLE = "amadeus_results_bundle";
+    private static final String CAR_LIST_RESULTS_BUNDLE = "amadeus_results_bundle";
     private int mColumnCount = 1;
-    private OnListFragmentInteractionListener mListener;
-    private ArrayList<AmadeusResult> resultsList;
+    private OnListFragmentInteractionListener callbackToActivity;
+    private ArrayList<Car> carList;
     private SearchResultsPresenter presenter;
     private ResultsAdapter adapter;
 
@@ -58,19 +57,18 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        resultsList = new ArrayList<>();
+        carList = new ArrayList<>();
 
-        if (savedInstanceState == null || !savedInstanceState.containsKey(AMADEUS_RESULTS_BUNDLE)) {
+        if (savedInstanceState == null || !savedInstanceState.containsKey(CAR_LIST_RESULTS_BUNDLE)) {
             if (getArguments() != null) {
                 mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
             }
         } else {
-            ArrayList<AmadeusResult> temp = savedInstanceState.getParcelableArrayList(AMADEUS_RESULTS_BUNDLE);
-            resultsList.addAll(temp);
+            carList.addAll(savedInstanceState.getParcelableArrayList(CAR_LIST_RESULTS_BUNDLE));
         }
 
         presenter = SearchResultsPresenter.getInstance(getActivity());
-        adapter = new ResultsAdapter(resultsList, mListener, getActivity(), presenter);
+        adapter = new ResultsAdapter(carList, callbackToActivity, getActivity(), presenter);
     }
 
     @Override
@@ -92,14 +90,15 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
             }
 
             recyclerView.setAdapter(adapter);
-
+            //alleviates the stopping of the fling action when the user ACTION_UP
+            ViewCompat.setNestedScrollingEnabled(recyclerView, false);
         }
         return view;
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putParcelableArrayList(AMADEUS_RESULTS_BUNDLE, resultsList);
+        outState.putParcelableArrayList(CAR_LIST_RESULTS_BUNDLE, carList);
         super.onSaveInstanceState(outState);
     }
 
@@ -107,7 +106,7 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+            callbackToActivity = (OnListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
@@ -117,7 +116,7 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        callbackToActivity = null;
     }
 
     @Override
@@ -131,15 +130,18 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
     }
 
     protected void makeCarResultsRequest(String addressQueryString, String pickupSelection, String dropoffSelection) {
+        callbackToActivity.resultsLoading(true);
         presenter.getCars(addressQueryString, pickupSelection, dropoffSelection);
     }
 
     @Override
-    public void updateCarSearchResults(List<AmadeusResult> carResults) {
-        if (resultsList.size() > 0) {
-            resultsList.clear();
+    public void updateCarSearchResults(ArrayList<Car> carResults) {
+        callbackToActivity.resultsLoading(false);
+
+        if (carList.size() > 0) {
+            carList.clear();
         }
-        resultsList.addAll(carResults);
+        carList.addAll(carResults);
 
         if (adapter != null) {
             adapter.notifyDataSetChanged();
@@ -157,7 +159,6 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(AmadeusResult item);
+        void resultsLoading(boolean setLoadingIndicator);
     }
 }

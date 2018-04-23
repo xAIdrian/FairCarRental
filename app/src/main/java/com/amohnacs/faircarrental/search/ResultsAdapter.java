@@ -1,7 +1,6 @@
 package com.amohnacs.faircarrental.search;
 
 import android.content.Context;
-import android.location.Location;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,19 +10,14 @@ import android.widget.TextView;
 import com.amohnacs.faircarrental.R;
 import com.amohnacs.faircarrental.search.ui.SearchResultsFragment.OnListFragmentInteractionListener;
 import com.amohnacs.model.amadeus.Address;
-import com.amohnacs.model.amadeus.AmadeusResult;
 import com.amohnacs.model.amadeus.Car;
 import com.amohnacs.model.amadeus.AmadeusLocation;
+import com.amohnacs.model.amadeus.VehicleInfo;
 import com.amohnacs.model.googlemaps.LatLngLocation;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -32,13 +26,14 @@ import butterknife.ButterKnife;
 public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.CarResultViewHolder> {
 
     private static final String DISTANCE_PREPEND = "Distance : ";
+    private static final String PRICE_PREPEND = "Price : ";
 
-    private final List<AmadeusResult> values;
+    private final List<Car> values;
     private final OnListFragmentInteractionListener mListener;
     private final Context context;
     private final SearchResultsPresenter presenter;
 
-    public ResultsAdapter(List<AmadeusResult> items, OnListFragmentInteractionListener listener,
+    public ResultsAdapter(ArrayList<Car> items, OnListFragmentInteractionListener listener,
                           Context context, SearchResultsPresenter presenter) {
         values = items;
         mListener = listener;
@@ -55,51 +50,26 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.CarResul
 
     @Override
     public void onBindViewHolder(final CarResultViewHolder holder, int position) {
-        AmadeusResult workingItem = values.get(position);
+        Car car = values.get(position);
+        VehicleInfo vi = car.getVehicleInfo();
 
-        holder.setTitle(workingItem.getProvider().getCompanyName());
-        holder.setAirport(workingItem.getAirport());
-        holder.setMapLocation(workingItem.getAmadeusLocation());
+        holder.setTitle(vi.getAcrissCode() + " : " + vi.getCategory() + " " + vi.getType());
+        holder.setCompany(car.getCompanyName());
 
-        Address address = workingItem.getAddress();
+        Address address = car.getAddress();
         String addressString = address.getLine1() + ", " + address.getCity() + ", " + address.getCountry()
                 + ", " + address.getPostalCode();
         holder.setAddress(addressString);
 
         holder.setCalculatedDistance(
-                getDistanceString(workingItem.getAmadeusLocation(), presenter.getUserLatLngLocation())
+                getDistanceString(car.getAmadeusLocation(), presenter.getUserLatLngLocation())
         );
-        holder.setCumulativePrice(getPriceString(workingItem));
-    }
 
-    // Price : $$$ / Price : $$$$
-    private String getPriceString(AmadeusResult result) {
-        float cumulativeValue = 0;
-        String dollarDollarBillsYall = "$";
-
-        for (Car car : result.getCars()) {
-            cumulativeValue = car.getEstimatedTotal().getAmount();
+        if (car.getRates() != null && car.getRates().size() > 0) {
+            NumberFormat formatter = NumberFormat.getCurrencyInstance();
+            String output = formatter.format(car.getRates().get(0).getPrice().getAmount());
+            holder.setPrice(PRICE_PREPEND + output);
         }
-
-        result.setCumulativePrice(cumulativeValue);
-        int remainder = (int) (cumulativeValue / 100);
-
-        if (remainder > 30) {
-            dollarDollarBillsYall = "$$$$$$";
-        } else if (remainder > 25) {
-            dollarDollarBillsYall = "$$$$$";
-        } else if (remainder > 20) {
-            dollarDollarBillsYall = "$$$$";
-        } else if (remainder > 15) {
-            dollarDollarBillsYall = "$$$";
-        } else if (remainder > 10) {
-            dollarDollarBillsYall = "$$";
-        } else if (remainder > 5) {
-            dollarDollarBillsYall = "$";
-        } else {
-            dollarDollarBillsYall = "¢";
-        }
-        return dollarDollarBillsYall;
     }
 
     private String getDistanceString(AmadeusLocation amadeusLocation, LatLngLocation userLocation) {
@@ -145,16 +115,12 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.CarResul
 
     //////////////
 
-    public class CarResultViewHolder extends RecyclerView.ViewHolder {
-
-        private GoogleMap map;
+    class CarResultViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.company_code_name_textView)
         TextView companyTitleTextView;
-        @BindView(R.id.airport_textView)
-        TextView airportTextView;
-        @BindView(R.id.map)
-        MapView mapView;
+        @BindView(R.id.company_textView)
+        TextView companyTextView;
         @BindView(R.id.address_textView)
         TextView addressTextView;
         @BindView(R.id.distance_textView)
@@ -162,59 +128,30 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.CarResul
         @BindView(R.id.price_textView)
         TextView priceTextView;
 
-        AmadeusLocation amadeusLocation;
-
         CarResultViewHolder(View view, Context context) {
             super(view);
 
             ButterKnife.bind(this, view);
 
-            mapView.onCreate(null);
-            mapView.getMapAsync(googleMap -> {
-                map = googleMap;
-
-                MapsInitializer.initialize(context);
-                map.getUiSettings().setMapToolbarEnabled(false);
-
-                updateMapContents(amadeusLocation);
-            });
-        }
-
-        private void updateMapContents(AmadeusLocation mapAmadeusLocation) {
-            LatLng latlng = new LatLng(mapAmadeusLocation.getLatitude(), mapAmadeusLocation.getLongitude());
-            // Since the mapView is re-used, need to remove pre-existing mapView features.
-            map.clear();
-
-            // Update the mapView feature data and camera position.
-            map.addMarker(new MarkerOptions().position(latlng));
-
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latlng, 10f);
-            map.moveCamera(cameraUpdate);
         }
 
         void setTitle(String title) {
             companyTitleTextView.setText(title);
         }
 
-        void setAirport(String airport) {
-            airportTextView.setText(airport);
+        void setCompany(String airport) {
+            companyTextView.setText(airport);
         }
 
         void setAddress(String address) {
             addressTextView.setText(address);
         }
 
-        void setMapLocation(AmadeusLocation mapAmadeusLocation) {
-            // If the map is ready, update its content.
-            this.amadeusLocation = mapAmadeusLocation;
-        }
-
-        // TODO: 4/21/18 we still need to calculate the distance with userLocation
         void setCalculatedDistance(String calculatedDistance) {
             distanceTextView.setText(calculatedDistance);
         }
 
-        public void setCumulativePrice(String price) {
+        void setPrice(String price) {
             priceTextView.setText(price);
         }
     }

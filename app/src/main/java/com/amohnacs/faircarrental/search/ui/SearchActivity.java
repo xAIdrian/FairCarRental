@@ -1,5 +1,6 @@
 package com.amohnacs.faircarrental.search.ui;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
@@ -11,11 +12,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.amohnacs.common.mvp.MvpActivity;
@@ -55,6 +58,9 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
     @BindView(R.id.dropoff_result_textView)
     TextView dropOffResultTextView;
 
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+
     @BindView(R.id.fab)
     FloatingActionButton fab;
 
@@ -62,7 +68,11 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
     private SearchResultsFragment searchResultFragment;
 
     private Calendar calendar;
-    private boolean datePickerActive = false; //datepickerdialog is a little laggy in emulator
+    private boolean datePickerActive = false; //datepickerdialog is a little laggy
+
+    private boolean isCompanyDescending = true;
+    private boolean isDistaceDescending = true;
+    private boolean isPriceDescending = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,11 +210,6 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
         presenter.onDateSetChecker(view, year, monthOfYear, dayOfMonth);
     }
 
-    @Override
-    public void onListFragmentInteraction(AmadeusResult item) {
-
-    }
-
     private void showDatePickerDialog(String tag) {
         DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
                 this,
@@ -219,6 +224,11 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
         datePickerDialog.dismissOnPause(true);
 
         datePickerDialog.show(getFragmentManager(), tag);
+    }
+
+    @Override
+    public void resultsLoading(boolean setLoadingIndicator) {
+        progressBar.setVisibility(setLoadingIndicator ? View.VISIBLE : View.GONE);
     }
 
     /**

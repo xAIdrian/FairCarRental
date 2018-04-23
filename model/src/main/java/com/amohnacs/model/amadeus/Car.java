@@ -22,6 +22,12 @@ public class Car implements Parcelable {
     @SerializedName("image")
     private Image image;
 
+    //set outside of retrofit mapping
+    private String companyName;
+    private AmadeusLocation amadeusLocation;
+    private Address address;
+    private String airport;
+
     public Car() {
     }
 
@@ -33,7 +39,14 @@ public class Car implements Parcelable {
     }
 
     protected Car(Parcel in) {
+        vehicleInfo = in.readParcelable(VehicleInfo.class.getClassLoader());
+        rates = in.createTypedArrayList(Rate.CREATOR);
         estimatedTotal = in.readParcelable(EstimatedTotal.class.getClassLoader());
+        image = in.readParcelable(Image.class.getClassLoader());
+        companyName = in.readString();
+        amadeusLocation = in.readParcelable(AmadeusLocation.class.getClassLoader());
+        address = in.readParcelable(Address.class.getClassLoader());
+        airport = in.readString();
     }
 
     public static final Creator<Car> CREATOR = new Creator<Car>() {
@@ -80,6 +93,41 @@ public class Car implements Parcelable {
         this.image = image;
     }
 
+    //added outside of Retrofit mapping
+
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public AmadeusLocation getAmadeusLocation() {
+        return amadeusLocation;
+    }
+
+    public void setAmadeusLocation(AmadeusLocation amadeusLocation) {
+        this.amadeusLocation = amadeusLocation;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public String getAirport() {
+        return airport;
+    }
+
+    public void setAirport(String airport) {
+        this.airport = airport;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -87,6 +135,13 @@ public class Car implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(vehicleInfo, flags);
+        dest.writeTypedList(rates);
         dest.writeParcelable(estimatedTotal, flags);
+        dest.writeParcelable(image, flags);
+        dest.writeString(companyName);
+        dest.writeParcelable(amadeusLocation, flags);
+        dest.writeParcelable(address, flags);
+        dest.writeString(airport);
     }
 }

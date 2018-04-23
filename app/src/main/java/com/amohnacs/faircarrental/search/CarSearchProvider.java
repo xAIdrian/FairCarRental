@@ -13,6 +13,7 @@ import com.amohnacs.model.amadeus.AmadeusResults;
 import com.amohnacs.model.googlemaps.GeoCodingResults;
 import com.amohnacs.model.googlemaps.LatLngLocation;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 import retrofit2.Call;
@@ -57,15 +58,27 @@ public class CarSearchProvider implements SearchResultsContract.Provider {
         calls.enqueue(new retrofit2.Callback<GeoCodingResults>() {
             @Override
             public void onResponse(Call<GeoCodingResults> call, Response<GeoCodingResults> response) {
-                LatLngLocation location = response.body().getGeoCodingResults().get(0)
-                        .getGeometry().getLocation();
+                if (response.isSuccessful()) {
+                    LatLngLocation location = response.body().getGeoCodingResults().get(0)
+                            .getGeometry().getLocation();
 
-                getCarSearchResults(callback, location, pickupSelection, dropoffSelection);
+                    getCarSearchResults(callback, location, pickupSelection, dropoffSelection);
+                } else {
+                    Log.e(TAG, String.valueOf(response.errorBody()));
+
+                    if (weakCallback != null) {
+                        weakCallback.get().onCarSearchResultError("Response not successful");
+                    }
+                }
             }
 
             @Override
             public void onFailure(Call<GeoCodingResults> call, Throwable t) {
-                Log.e(TAG, "fail");
+                t.printStackTrace();
+
+                if (weakCallback != null) {
+                    weakCallback.get().onCarSearchResultError(t.getMessage());
+                }
             }
         });
     }
@@ -85,6 +98,8 @@ public class CarSearchProvider implements SearchResultsContract.Provider {
                         weakCallback.get().onCarSearchResults(location, response.body().getAmadeusResults());
                     }
                 } else {
+                    Log.e(TAG, String.valueOf(response.errorBody()));
+
                     if (weakCallback != null) {
                         weakCallback.get().onCarSearchResultError("Response not successful");
                     }
@@ -93,6 +108,8 @@ public class CarSearchProvider implements SearchResultsContract.Provider {
 
             @Override
             public void onFailure(Call<AmadeusResults> call, Throwable t) {
+                t.printStackTrace();
+
                 if (weakCallback != null) {
                     weakCallback.get().onCarSearchResultError(t.getMessage());
                 }

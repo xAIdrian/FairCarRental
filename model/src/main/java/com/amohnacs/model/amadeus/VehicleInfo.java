@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by adrianmohnacs on 4/20/18.
  */
 
-class VehicleInfo implements Parcelable {
+public class VehicleInfo implements Parcelable {
 
     @SerializedName("acriss_code")
     private String acrissCode;

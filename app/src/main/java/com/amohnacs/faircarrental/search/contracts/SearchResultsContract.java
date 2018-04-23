@@ -1,8 +1,10 @@
 package com.amohnacs.faircarrental.search.contracts;
 
 import com.amohnacs.model.amadeus.AmadeusResult;
+import com.amohnacs.model.amadeus.Car;
 import com.amohnacs.model.googlemaps.LatLngLocation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,10 +27,11 @@ public interface SearchResultsContract {
 
     interface Presenter {
         void getCars(String addressQueryString, String pickupSelection, String dropoffSelection);
+        ArrayList<Car> getNextCachedCarBundle();
     }
 
     interface View {
 
-        void updateCarSearchResults(List<AmadeusResult> carResults);
+        void updateCarSearchResults(ArrayList<Car> carResults);
     }
 }

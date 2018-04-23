@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by adrianmohnacs on 4/20/18.
  */
 
-class Price implements Parcelable{
+public class Price implements Parcelable{
 
     @SerializedName("amount")
     private float amount;

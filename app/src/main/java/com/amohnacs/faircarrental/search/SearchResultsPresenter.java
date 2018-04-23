@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import com.amohnacs.common.mvp.BasePresenter;
 import com.amohnacs.faircarrental.search.contracts.SearchResultsContract;
 import com.amohnacs.model.amadeus.AmadeusResult;
+import com.amohnacs.model.amadeus.Car;
+import com.amohnacs.model.amadeus.Provider;
 import com.amohnacs.model.googlemaps.LatLngLocation;
 
 import java.util.ArrayList;
@@ -20,13 +22,11 @@ public class SearchResultsPresenter extends BasePresenter<SearchResultsContract.
 
     private static volatile SearchResultsPresenter instance;
 
-    private Context context;
     private CarSearchProvider provider;
-    private ArrayList<AmadeusResult> resultsForSorting;
+    private ArrayList<Car> resultsForSorting;
     private LatLngLocation userLocation;
 
     private SearchResultsPresenter(Context context) {
-        this.context = context;
         provider = CarSearchProvider.getInstance(context);
 
         resultsForSorting = new ArrayList<>();
@@ -41,7 +41,6 @@ public class SearchResultsPresenter extends BasePresenter<SearchResultsContract.
             }
         }
         return instance;
-
     }
 
     @Override
@@ -51,20 +50,36 @@ public class SearchResultsPresenter extends BasePresenter<SearchResultsContract.
     }
 
     @Override
-    public void onCarSearchResults(LatLngLocation userLocation, List<AmadeusResult> carResults) {
+    public ArrayList<Car> getNextCachedCarBundle() {
+        return null;
+    }
+
+    @Override
+    public void onCarSearchResults(LatLngLocation userLocation, List<AmadeusResult> providerResults) {
         this.userLocation = userLocation;
 
-        if (carResults != null) {
+        ArrayList<Car> carList = new ArrayList<>();
 
-            if (resultsForSorting.size() > 0) {
-                resultsForSorting.clear();
-            }
-            resultsForSorting.addAll(carResults);
+        for (AmadeusResult result : providerResults) {
+            for (Car car : result.getCars()) {
+                car.setCompanyName(result.getProvider().getCompanyName());
+                car.setAmadeusLocation(result.getAmadeusLocation());
+                car.setAddress(result.getAddress());
+                car.setAirport(result.getAirport());
 
-            if(isViewAttached()) {
-                getMvpView().updateCarSearchResults(carResults);
+                carList.add(car);
             }
         }
+
+        if (resultsForSorting.size() > 0) {
+            resultsForSorting.clear();
+        }
+        resultsForSorting.addAll(carList);
+
+        if (isViewAttached()) {
+            getMvpView().updateCarSearchResults(resultsForSorting);
+        }
+
     }
 
     @Override
