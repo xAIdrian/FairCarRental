@@ -2,8 +2,8 @@
     <string name="app_name">FairCarRental</string>
 
     <string name="action_settings">Settings</string>
-    <string name="address_hint">address</string>
-    <string name="search_title">Choose Your Whip :</string>
+    <string name="address_hint">Your Location</string>
+    <string name="search_title">Choose Your Rental :</string>
     <string name="pickup_date">Pickup Date</string>
     <string name="dropoff_date">Drop-Off Date</string>
     <string name="address_error">Address input is not valid</string>
@@ -13,5 +13,7 @@
     <string name="cancel">CANCEL</string>
     <string name="pickup_before_today">Unfortunately, time travel isn\'t possible yet.  You can\'t pickup the car before tomorrow\'s date</string>
     <string name="pickup_after_dropoff">You need your car before you can drop it off.  Your selected pickup date is after the drop-off date.</string>
-    <string name="invalid_address">This location doesn\'t exist :/</string>
+    <string name="invalid_address">This amadeusLocation doesn\'t exist :/</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="empty_string">Nothing to see here.\nTry searching for your dream car above.</string>
 </resources>

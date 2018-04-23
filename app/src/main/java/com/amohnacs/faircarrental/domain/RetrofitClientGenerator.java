@@ -20,16 +20,32 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClientGenerator {
     private static final String TAG = RetrofitClientGenerator.class.getSimpleName();
 
-    private static final String AMADEUS_ROOT_ENDPOINT = "http://api.sandbox.amadeus.com/";
+    private static final String AMADEUS_ROOT_ENDPOINT = "https://api.sandbox.amadeus.com/";
+    //https://api.sandbox.amadeus.com/v1.2/cars/search-circle
+    private static final String GOOGLE_MAPS_ROOT_ENDPOINT = "https://maps.googleapis.com/maps/";
 
-    static Retrofit.Builder amadeusRetrofitBuilder = new Retrofit.Builder()
+    private static Retrofit.Builder amadeusRetrofitBuilder = new Retrofit.Builder()
             .baseUrl(AMADEUS_ROOT_ENDPOINT)
             .addConverterFactory(
                     buildGsonConverter()
             );
 
-    public static <C> C generateClient(Class<C> clientsClass) {
+    private static Retrofit.Builder mapsRetrofitBuilder = new Retrofit.Builder()
+            .baseUrl(GOOGLE_MAPS_ROOT_ENDPOINT)
+            .addConverterFactory(
+                    buildGsonConverter()
+            );
+
+    public static <C> C generateAmadeusClient(Class<C> clientsClass) {
         Retrofit retrofitClient = amadeusRetrofitBuilder.client(
+                buildLogginHttpBuilder().build()
+        ).build();
+
+        return retrofitClient.create(clientsClass);
+    }
+
+    public static <C> C generateGoogleMapsClient(Class<C> clientsClass) {
+        Retrofit retrofitClient = mapsRetrofitBuilder.client(
                 buildLogginHttpBuilder().build()
         ).build();
 
