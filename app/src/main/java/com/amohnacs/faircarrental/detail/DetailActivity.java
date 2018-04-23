@@ -11,14 +11,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amohnacs.faircarrental.R;
 import com.amohnacs.model.amadeus.Address;
 import com.amohnacs.model.amadeus.AmadeusLocation;
 import com.amohnacs.model.amadeus.Car;
+import com.amohnacs.model.amadeus.Image;
 import com.amohnacs.model.amadeus.VehicleInfo;
 import com.amohnacs.model.googlemaps.LatLngLocation;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -79,6 +82,9 @@ public class DetailActivity extends AppCompatActivity {
 
     @BindView(R.id.list)
     RecyclerView recyclerView;
+
+    @BindView(R.id.car_imageView)
+    ImageView carImageView;
 
     private GoogleMap map;
 
@@ -160,6 +166,14 @@ public class DetailActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new RateAdapter(this, focusedCar.getRates());
         recyclerView.setAdapter(adapter);
+
+        Image image = focusedCar.getImage();
+        if (image != null) {
+            Glide
+                    .with(this)
+                    .load(image.getUrl())
+                    .into(carImageView);
+        }
 
         navFab.setOnClickListener(v -> {
             //todo navigation activity OR intent to Google Maps ?
