@@ -109,4 +109,9 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="OK">OK</string>
+    <string name="CANCEL">CANCEL</string>
+    <string name="sort">Sorty By</string>
+    <string name="need_data">Looks like there is nothing to sort!</string>
+    <string name="sorting_loading">We\'re sorting your data...stand by</string>
 </resources>

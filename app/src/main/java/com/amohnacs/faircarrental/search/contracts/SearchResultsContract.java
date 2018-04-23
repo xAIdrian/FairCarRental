@@ -27,7 +27,13 @@ public interface SearchResultsContract {
 
     interface Presenter {
         void getCars(String addressQueryString, String pickupSelection, String dropoffSelection);
-        ArrayList<Car> getNextCachedCarBundle();
+        void sortCarsByCompanyDescending();
+        void sortCarsByDistanceDescending();
+        void sortCarsByPriceDescending();
+
+        void sortCarsByCompanyAscending();
+        void sortCarsByDistanceAscending();
+        void sortCarsByPriceAscending();
     }
 
     interface View {

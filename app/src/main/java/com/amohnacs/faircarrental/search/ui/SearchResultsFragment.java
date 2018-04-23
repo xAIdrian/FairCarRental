@@ -3,11 +3,14 @@ package com.amohnacs.faircarrental.search.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +30,8 @@ import java.util.ArrayList;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, SearchResultsContract.View> implements SearchResultsContract.View {
+public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, SearchResultsContract.View>
+        implements SearchResultsContract.View {
     public static final String TAG = SearchResultsFragment.class.getSimpleName();
 
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -138,7 +142,7 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
     public void updateCarSearchResults(ArrayList<Car> carResults) {
         callbackToActivity.resultsLoading(false);
 
-        if (carList.size() > 0) {
+        if (!carList.isEmpty()) {
             carList.clear();
         }
         carList.addAll(carResults);
@@ -146,6 +150,43 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
         if (adapter != null) {
             adapter.notifyDataSetChanged();
         }
+    }
+
+    /**
+     * The user has interacted with the sorting fab and wants to sort their data.
+     * Results must be displayed in order to search
+     * @param position
+     */
+    public void onPositiveDialogClick(int position) {
+        Log.e(TAG, "sorting index = " + position);
+        if (!carList.isEmpty()) {
+            switch (position) {
+                case 0:
+                    presenter.sortCarsByCompanyAscending();
+                    break;
+                case 1:
+                    presenter.sortCarsByCompanyDescending();
+                    break;
+                case 2:
+                    presenter.sortCarsByDistanceAscending();
+                    break;
+                case 3:
+                    presenter.sortCarsByDistanceDescending();
+                    break;
+                case 4:
+                    presenter.sortCarsByPriceAscending();
+                    break;
+                case 5:
+                    presenter.sortCarsByPriceDescending();
+                    break;
+            }
+        } else {
+            buildSnackBar(R.string.need_data);
+        }
+    }
+
+    private void buildSnackBar(@StringRes @NonNull int stringRes) {
+        Snackbar.make(getView(), getActivity().getString(stringRes), Snackbar.LENGTH_LONG).show();
     }
 
     /**

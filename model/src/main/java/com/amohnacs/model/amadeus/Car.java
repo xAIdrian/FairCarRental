@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+
 /**
  * Created by adrianmohnacs on 4/20/18.
  */
@@ -27,15 +28,21 @@ public class Car implements Parcelable {
     private AmadeusLocation amadeusLocation;
     private Address address;
     private String airport;
+    private float userDistanceToThisCar;
 
     public Car() {
     }
 
-    public Car(VehicleInfo vehicleInfo, List<Rate> rates, EstimatedTotal estimatedTotal, Image image) {
+    public Car(VehicleInfo vehicleInfo, List<Rate> rates, EstimatedTotal estimatedTotal, Image image, String companyName, AmadeusLocation amadeusLocation, Address address, String airport, float userDistanceToThisCar) {
         this.vehicleInfo = vehicleInfo;
         this.rates = rates;
         this.estimatedTotal = estimatedTotal;
         this.image = image;
+        this.companyName = companyName;
+        this.amadeusLocation = amadeusLocation;
+        this.address = address;
+        this.airport = airport;
+        this.userDistanceToThisCar = userDistanceToThisCar;
     }
 
     protected Car(Parcel in) {
@@ -47,6 +54,7 @@ public class Car implements Parcelable {
         amadeusLocation = in.readParcelable(AmadeusLocation.class.getClassLoader());
         address = in.readParcelable(Address.class.getClassLoader());
         airport = in.readString();
+        userDistanceToThisCar = in.readFloat();
     }
 
     public static final Creator<Car> CREATOR = new Creator<Car>() {
@@ -128,6 +136,15 @@ public class Car implements Parcelable {
         this.airport = airport;
     }
 
+
+    public float getUserDistanceToThisCar() {
+        return userDistanceToThisCar;
+    }
+
+    public void setUserDistanceToThisCar(float userDistanceToThisCar) {
+        this.userDistanceToThisCar = userDistanceToThisCar;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -143,5 +160,6 @@ public class Car implements Parcelable {
         dest.writeParcelable(amadeusLocation, flags);
         dest.writeParcelable(address, flags);
         dest.writeString(airport);
+        dest.writeFloat(userDistanceToThisCar);
     }
 }

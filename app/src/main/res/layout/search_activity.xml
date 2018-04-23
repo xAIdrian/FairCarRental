@@ -48,14 +48,26 @@
         android:paddingTop="@dimen/header_margin"/>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/search_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_anchor="@id/app_bar"
+        app:layout_anchorGravity="bottom|center"
+        app:srcCompat="@drawable/ic_magnify_white"
+        android:backgroundTint="@color/colorPrimary"
+        android:elevation="@dimen/default_elevation" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/sort_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@drawable/ic_magnify_white"
-        android:backgroundTint="@color/colorPrimary"
-        android:elevation="@dimen/default_elevation" />
+        app:srcCompat="@drawable/ic_sort"
+        android:backgroundTint="@color/sort_blue"
+        android:elevation="@dimen/default_elevation"
+        android:visibility="invisible"/>
 
 </android.support.design.widget.CoordinatorLayout>

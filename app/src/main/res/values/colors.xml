@@ -13,4 +13,5 @@
     <color name="white">@android:color/white</color>
 
     <color name="money_be_green">#388E3C</color>
+    <color name="sort_blue">#2196F3</color>
 </resources>
