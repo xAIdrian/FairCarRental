@@ -95,22 +95,7 @@ public class SearchResultsPresenter extends BasePresenter<SearchResultsContract.
                 @Override
                 public int compare(Car car1, Car car2) {
 
-                    if (car1.getRates() != null && !car1.getRates().isEmpty()
-                            && car2.getRates() != null && !car2.getRates().isEmpty()) {
-                        Log.e(TAG, "price compare");
-                        return (int) (car2.getRates().get(0).getPrice().getAmount()
-                                                        - car1.getRates().get(0).getPrice().getAmount()
-                        );
-                    } else if (car1.getRates() != null && !car1.getRates().isEmpty()) {
-                        Log.e(TAG, "price case -1");
-                        return -1;
-                    } else if (car2.getRates() != null && !car2.getRates().isEmpty()) {
-                        Log.e(TAG, "price case 1");
-                        return 1;
-                    } else {
-                        Log.e(TAG, "price case 0");
-                        return 0;
-                    }
+                    return (int) (car2.getEstimatedTotal().getAmount() - car1.getEstimatedTotal().getAmount());
                 }
             });
             if (isViewAttached()) {
@@ -162,22 +147,7 @@ public class SearchResultsPresenter extends BasePresenter<SearchResultsContract.
                 @Override
                 public int compare(Car car1, Car car2) {
 
-                    if (car1.getRates() != null && !car1.getRates().isEmpty()
-                            && car2.getRates() != null && !car2.getRates().isEmpty()) {
-                        Log.e(TAG, "price compare");
-                        return (int) (car1.getRates().get(0).getPrice().getAmount()
-                                - car2.getRates().get(0).getPrice().getAmount()
-                        );
-                    } else if (car1.getRates() != null && !car1.getRates().isEmpty()) {
-                        Log.e(TAG, "price case -1");
-                        return -1;
-                    } else if (car2.getRates() != null && !car2.getRates().isEmpty()) {
-                        Log.e(TAG, "price case 1");
-                        return 1;
-                    } else {
-                        Log.e(TAG, "price case 0");
-                        return 0;
-                    }
+                    return (int) (car1.getEstimatedTotal().getAmount() - car2.getEstimatedTotal().getAmount());
                 }
             });
             if (isViewAttached()) {

@@ -23,10 +23,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.amohnacs.faircarrental.MyUtils.getDistanceString;
+
 public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarResultViewHolder> {
 
-    private static final String DISTANCE_PREPEND = "Distance : ";
-    private static final String PRICE_PREPEND = "Price : ";
+    public static final String PRICE_PREPEND = "Price : ";
 
     private final List<Car> values;
     private final RecyclerClickListener recyclerClickListener;
@@ -65,21 +66,10 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarResultViewHol
                 getDistanceString(car.getAmadeusLocation(), presenter.getUserLatLngLocation())
         );
 
-        if (car.getRates() != null && !car.getRates().isEmpty()) {
-            NumberFormat formatter = NumberFormat.getCurrencyInstance();
-            String output = formatter.format(car.getRates().get(0).getPrice().getAmount());
-            holder.setPrice(PRICE_PREPEND + output);
-        }
-    }
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        String output = formatter.format(car.getEstimatedTotal().getAmount());
+        holder.setPrice(PRICE_PREPEND + output);
 
-    private String getDistanceString(AmadeusLocation amadeusLocation, LatLngLocation userLocation) {
-        DecimalFormat decimalFormat = new DecimalFormat();
-        decimalFormat.setMaximumFractionDigits(2);
-
-        float distance = MyUtils.distance(userLocation.getLat(), userLocation.getLongg(),
-                amadeusLocation.getLatitude(), amadeusLocation.getLongitude());
-        String distanceString = decimalFormat.format(distance);
-        return DISTANCE_PREPEND + distanceString + " km";
     }
 
     @Override

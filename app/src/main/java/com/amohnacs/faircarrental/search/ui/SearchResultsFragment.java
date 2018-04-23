@@ -193,7 +193,7 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
 
     @Override
     public void onItemClick(Car car) {
-        startActivity(DetailActivity.getStartIntent(getActivity(), car));
+        startActivity(DetailActivity.getStartIntent(getActivity(), car, presenter.getUserLatLngLocation()));
     }
 
     /**

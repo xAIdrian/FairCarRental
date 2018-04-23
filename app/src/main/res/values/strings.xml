@@ -26,4 +26,12 @@
     <string name="sort">Sorty By</string>
     <string name="need_data">Looks like there is nothing to sort!</string>
     <string name="sorting_loading">We\'re sorting your data...stand by</string>
+    <string name="additional_info">Additional Information</string>
+    <string name="acriss">ACRISS</string>
+    <string name="transmission">Transmission</string>
+    <string name="fuel">Fuel</string>
+    <string name="air_conditioning">Air Conditioning</string>
+    <string name="category">Category</string>
+    <string name="type">Type</string>
+    <string name="rates">Rates</string>
 </resources>

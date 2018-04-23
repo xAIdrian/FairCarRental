@@ -1,5 +1,6 @@
 package com.amohnacs.faircarrental;
 
+import com.amohnacs.model.amadeus.AmadeusLocation;
 import com.amohnacs.model.amadeus.Car;
 import com.amohnacs.model.googlemaps.LatLngLocation;
 
@@ -12,6 +13,8 @@ import okhttp3.internal.Util;
  */
 
 public class MyUtils {
+    private static final String DISTANCE_PREPEND = "Distance : ";
+
 
     /**
      * Haversine Formula
@@ -45,5 +48,15 @@ public class MyUtils {
 
         return distance(userLocation.getLat(), userLocation.getLongg(),
                 car.getAmadeusLocation().getLatitude(), car.getAmadeusLocation().getLongitude());
+    }
+
+    public static String getDistanceString(AmadeusLocation amadeusLocation, LatLngLocation userLocation) {
+        DecimalFormat decimalFormat = new DecimalFormat();
+        decimalFormat.setMaximumFractionDigits(2);
+
+        float distance = MyUtils.distance(userLocation.getLat(), userLocation.getLongg(),
+                amadeusLocation.getLatitude(), amadeusLocation.getLongitude());
+        String distanceString = decimalFormat.format(distance);
+        return DISTANCE_PREPEND + distanceString + " km";
     }
 }
