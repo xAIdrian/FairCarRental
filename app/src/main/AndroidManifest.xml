@@ -43,7 +43,10 @@
         <activity
             android:name=".detail.DetailActivity"
             android:label="@string/title_activity_detail"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".navigation.NavigationActivity"
+            android:label="@string/title_activity_navigation"></activity>
     </application>
 
 </manifest>

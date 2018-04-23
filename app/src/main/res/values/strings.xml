@@ -34,4 +34,5 @@
     <string name="category">Category</string>
     <string name="type">Type</string>
     <string name="rates">Rates</string>
+    <string name="title_activity_navigation">Navigation</string>
 </resources>
