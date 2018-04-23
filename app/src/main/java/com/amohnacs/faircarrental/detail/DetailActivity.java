@@ -34,6 +34,9 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.map)
     MapView mapView;
 
+    @BindView(R.id.fab)
+    FloatingActionButton navFab;
+
     private GoogleMap map;
 
     private Car focusedCar;
@@ -77,6 +80,11 @@ public class DetailActivity extends AppCompatActivity {
 
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.transparent));
         collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
+
+        navFab.setOnClickListener(v -> {
+            //todo navigation activity OR intent to Google Maps ?
+
+        });
     }
 
     private void updateMapContents(AmadeusLocation mapAmadeusLocation) {
