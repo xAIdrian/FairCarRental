@@ -6,22 +6,109 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.amohnacs.faircarrental.detail.DetailActivity"
-    tools:showIn="@layout/detail_activity">
+    tools:showIn="@layout/detail_activity"
+    android:background="@color/white">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="@string/large_text" />
-
-    <com.google.android.gms.maps.MapView xmlns:map="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginBottom="@dimen/text_margin"
-        map:cameraZoom="15"
-        map:liteMode="true"
-        map:mapType="normal" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/search_results_fragment_item" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/double_padding"
+            android:paddingEnd="@dimen/double_padding">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_transmission" />
+
+                <TextView
+                    android:id="@+id/transmission_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/double_padding"
+                    android:textAppearance="?attr/textAppearanceListItem"
+                    tools:text="Transmission"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/default_padding">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_gas_station"/>
+
+                <TextView
+                    android:id="@+id/fuel_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/double_padding"
+                    android:textAppearance="?attr/textAppearanceListItem"
+                    tools:text="Fuel"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/default_padding">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_air_conditioner"/>
+
+                <TextView
+                    android:id="@+id/air_conditioning_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/double_padding"
+                    android:textAppearance="?attr/textAppearanceListItem"
+                    tools:text="Air Conditioning"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/rates"
+                android:layout_marginTop="@dimen/double_padding"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/double_padding"
+            android:paddingEnd="@dimen/double_padding" />
+
+        <ImageView
+            android:id="@+id/car_imageView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/app_bar_height"
+            android:layout_margin="@dimen/double_padding"
+            android:src="@drawable/ic_car_placeholder"
+            android:scaleType="centerInside"/>
+
+    </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

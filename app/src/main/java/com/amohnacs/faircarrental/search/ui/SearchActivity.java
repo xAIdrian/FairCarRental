@@ -1,13 +1,10 @@
 package com.amohnacs.faircarrental.search.ui;
 
 import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -43,7 +40,7 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
 
     public static final String PICKUP_DIALOG = "pickup_dialog";
     public static final String DROPOFF_DIALOG = "dropoff_dialog";
-    private static final String DIALOG_POSITION_BUNDLE = "dialog_position_bundle";
+    private static final String SAVED_INSTANCE_STATE_DIALOG_POSITION = "saved_instance_state_dialog_position";
 
     @BindView(R.id.address_wrapper)
     TextInputLayout addressWrapper;
@@ -85,7 +82,7 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
         setContentView(R.layout.search_activity);
 
         if (savedInstanceState != null) {
-            sortingIndex = savedInstanceState.getInt(DIALOG_POSITION_BUNDLE);
+            sortingIndex = savedInstanceState.getInt(SAVED_INSTANCE_STATE_DIALOG_POSITION);
         }
 
         ButterKnife.bind(this);
@@ -144,7 +141,7 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(DIALOG_POSITION_BUNDLE, sortingIndex);
+        outState.putInt(SAVED_INSTANCE_STATE_DIALOG_POSITION, sortingIndex);
         super.onSaveInstanceState(outState);
     }
 

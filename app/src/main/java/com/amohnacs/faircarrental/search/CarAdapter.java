@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.amohnacs.faircarrental.R;
 import com.amohnacs.faircarrental.MyUtils;
-import com.amohnacs.faircarrental.search.ui.SearchResultsFragment.OnListFragmentInteractionListener;
 import com.amohnacs.model.amadeus.Address;
 import com.amohnacs.model.amadeus.Car;
 import com.amohnacs.model.amadeus.AmadeusLocation;
@@ -24,20 +23,21 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.CarResultViewHolder> {
+import static com.amohnacs.faircarrental.MyUtils.getDistanceString;
 
-    private static final String DISTANCE_PREPEND = "Distance : ";
-    private static final String PRICE_PREPEND = "Price : ";
+public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarResultViewHolder> {
+
+    public static final String PRICE_PREPEND = "Price : ";
 
     private final List<Car> values;
-    private final OnListFragmentInteractionListener mListener;
+    private final RecyclerClickListener recyclerClickListener;
     private final Context context;
     private final SearchResultsPresenter presenter;
 
-    public ResultsAdapter(ArrayList<Car> items, OnListFragmentInteractionListener listener,
-                          Context context, SearchResultsPresenter presenter) {
+    public CarAdapter(ArrayList<Car> items, RecyclerClickListener listener,
+                      Context context, SearchResultsPresenter presenter) {
         values = items;
-        mListener = listener;
+        recyclerClickListener = listener;
         this.context = context;
         this.presenter = presenter;
     }
@@ -46,7 +46,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.CarResul
     public CarResultViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.search_results_fragment_item, parent, false);
-        return new CarResultViewHolder(view, context);
+        return new CarResultViewHolder(view);
     }
 
     @Override
@@ -66,21 +66,10 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.CarResul
                 getDistanceString(car.getAmadeusLocation(), presenter.getUserLatLngLocation())
         );
 
-        if (car.getRates() != null && !car.getRates().isEmpty()) {
-            NumberFormat formatter = NumberFormat.getCurrencyInstance();
-            String output = formatter.format(car.getRates().get(0).getPrice().getAmount());
-            holder.setPrice(PRICE_PREPEND + output);
-        }
-    }
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        String output = formatter.format(car.getEstimatedTotal().getAmount());
+        holder.setPrice(PRICE_PREPEND + output);
 
-    private String getDistanceString(AmadeusLocation amadeusLocation, LatLngLocation userLocation) {
-        DecimalFormat decimalFormat = new DecimalFormat();
-        decimalFormat.setMaximumFractionDigits(2);
-
-        float distance = MyUtils.distance(userLocation.getLat(), userLocation.getLongg(),
-                amadeusLocation.getLatitude(), amadeusLocation.getLongitude());
-        String distanceString = decimalFormat.format(distance);
-        return DISTANCE_PREPEND + distanceString + " km";
     }
 
     @Override
@@ -103,11 +92,13 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.CarResul
         @BindView(R.id.price_textView)
         TextView priceTextView;
 
-        CarResultViewHolder(View view, Context context) {
+        CarResultViewHolder(View view) {
             super(view);
 
             ButterKnife.bind(this, view);
 
+            view.setOnClickListener(v ->
+                    recyclerClickListener.onItemClick(values.get(getAdapterPosition())));
         }
 
         void setTitle(String title) {
@@ -129,5 +120,9 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.CarResul
         void setPrice(String price) {
             priceTextView.setText(price);
         }
+    }
+
+    public interface RecyclerClickListener {
+        void onItemClick(Car car);
     }
 }
