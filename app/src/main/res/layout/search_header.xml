@@ -2,16 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/header_margin"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:paddingTop="@dimen/header_margin"
+    android:paddingStart="@dimen/header_margin"
+    android:paddingEnd="@dimen/header_margin"
+    android:paddingBottom="?attr/actionBarSize"
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/search_title"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/primaryText" />
+        android:textColor="@color/primaryText"
+        android:layout_marginTop="@dimen/extra_large_padding"/>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/address_wrapper"
@@ -47,7 +50,7 @@
             android:text="@string/pickup_date"
             android:textColor="@color/colorAccent"
             android:gravity="center"
-            android:background="@color/white"/>
+            android:background="@color/transparent"/>
 
         <Button
             android:id="@+id/dropoff_button"
@@ -58,7 +61,7 @@
             android:text="@string/dropoff_date"
             android:textColor="@color/colorAccent"
             android:gravity="center"
-            android:background="@color/white"/>
+            android:background="@color/transparent"/>
 
     </LinearLayout>
 
