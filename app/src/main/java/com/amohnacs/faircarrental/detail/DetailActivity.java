@@ -7,6 +7,8 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
@@ -75,11 +77,15 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.air_conditioning_textView)
     TextView airConditioningTextView;
 
+    @BindView(R.id.list)
+    RecyclerView recyclerView;
+
     private GoogleMap map;
 
     private Car focusedCar;
     private VehicleInfo vi;
     private LatLngLocation userLocation;
+    private RateAdapter adapter;
 
     public static Intent getStartIntent(Activity activity, Car car, LatLngLocation location) {
         Intent intent = new Intent(activity, DetailActivity.class);
@@ -105,9 +111,10 @@ public class DetailActivity extends AppCompatActivity {
             userLocation = savedInstanceState.getParcelable(SAVED_INSTANCE_STATE_USER_LOCATION);
         }
 
-        if (focusedCar != null) {
-            vi = focusedCar.getVehicleInfo();
+        if (focusedCar == null) {
+            throw new IllegalArgumentException("No car was passed to Detail Activity.  Something went very wrong");
         }
+        vi = focusedCar.getVehicleInfo();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -126,7 +133,7 @@ public class DetailActivity extends AppCompatActivity {
         final CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
 
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.transparent));
-        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
+        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.transparent));
 
         String title = vi.getAcrissCode() + " : " + vi.getCategory() + " " + vi.getType();
         companyTitleTextView.setText(title);
@@ -148,6 +155,11 @@ public class DetailActivity extends AppCompatActivity {
         transmissionTextView.setText(vi.getTransmission());
         fuelTextView.setText(vi.getFuel());
         airConditioningTextView.setText(vi.isAirConditioning() ? AC_POSITIVE : AC_NEGATIVE);
+
+        // set up the RecyclerView
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new RateAdapter(this, focusedCar.getRates());
+        recyclerView.setAdapter(adapter);
 
         navFab.setOnClickListener(v -> {
             //todo navigation activity OR intent to Google Maps ?
