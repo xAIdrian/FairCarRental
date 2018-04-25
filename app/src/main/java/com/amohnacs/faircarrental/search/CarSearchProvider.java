@@ -13,7 +13,6 @@ import com.amohnacs.model.amadeus.AmadeusResults;
 import com.amohnacs.model.googlemaps.GeoCodingResults;
 import com.amohnacs.model.googlemaps.LatLngLocation;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 import retrofit2.Call;
@@ -88,7 +87,7 @@ public class CarSearchProvider implements SearchResultsContract.Provider {
 
         String key = BuildConfig.ApiKey;
         Call<AmadeusResults> call = amadeusClient.getSearchResult(BuildConfig.ApiKey,
-                location.getLat(), location.getLongg(), 42, pickupSelection, dropoffSelection);
+                location.getLatitude(), location.getLongitude(), 42, pickupSelection, dropoffSelection);
 
         call.enqueue(new retrofit2.Callback<AmadeusResults>() {
             @Override

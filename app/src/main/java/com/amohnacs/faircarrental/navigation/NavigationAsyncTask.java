@@ -21,12 +21,12 @@ import java.util.List;
  * Created by adrianmohnacs on 4/23/18.
  */
 
-public class DirectionsAsyncTask extends AsyncTask<NavigationRequestObject, Void, DirectionsResult> {
+public class NavigationAsyncTask extends AsyncTask<NavigationRequestObject, Void, DirectionsResult> {
 
     private final GeoApiContext context;
     private final GoogleMap map;
 
-    public DirectionsAsyncTask(GeoApiContext context, GoogleMap map) {
+    public NavigationAsyncTask(GeoApiContext context, GoogleMap map) {
         this.context = context;
         this.map = map;
     }

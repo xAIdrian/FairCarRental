@@ -53,7 +53,8 @@
         <activity
             android:name=".navigation.NavigationActivity"
             android:label="@string/title_activity_navigation"
-            android:parentActivityName=".detail.DetailActivity">
+            android:parentActivityName=".detail.DetailActivity"
+            android:screenOrientation="portrait"> <!-- ;) -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".detail.DetailActivity" />

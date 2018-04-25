@@ -1,30 +1,78 @@
 package com.amohnacs.faircarrental.navigation;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
 import com.amohnacs.faircarrental.R;
+import com.amohnacs.faircarrental.detail.DetailActivity;
+import com.amohnacs.model.amadeus.AmadeusLocation;
+import com.amohnacs.model.googlemaps.LatLngLocation;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.GeoApiContext;
+import com.google.maps.model.TravelMode;
+
+import java.util.concurrent.TimeUnit;
 
 public class NavigationActivity extends FragmentActivity implements OnMapReadyCallback {
+    private static final String TAG = NavigationActivity.class.getSimpleName();
 
-    private GoogleMap mMap;
+    private static final String ORIGIN_EXTRA = "origin_extra";
+    private static final String DESTINATION_EXTRA = "destination_extra";
+
+    private GoogleMap mapMap;
+    private String formattedDestinationString;
+    private String formattedOriginString;
+
+    public static Intent getStartIntent(Activity activity, LatLngLocation origin, AmadeusLocation destination) {
+        Intent intent = new Intent(activity, DetailActivity.class);
+        intent.putExtra(ORIGIN_EXTRA, origin);
+        intent.putExtra(DESTINATION_EXTRA, destination);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
+
+        if (getIntent().getExtras() != null) {
+            formattedOriginString = originRequestFormatter(getIntent().getExtras().getParcelable(ORIGIN_EXTRA));
+            formattedDestinationString = destRequestFormatter(getIntent().getExtras().getParcelable(DESTINATION_EXTRA));
+        }
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        NavigationRequestObject requestObject = new NavigationRequestObject(
+                TravelMode.DRIVING, formattedOriginString, formattedDestinationString
+        );
+        new NavigationAsyncTask(getGeoContext(), mapMap).execute(requestObject);
     }
 
+    private String originRequestFormatter(LatLngLocation location) {
+        String returnValue = "";
+        if (location != null) {
+            returnValue += location.getLatitude() + "," + location.getLongitude();
+        }
+        return returnValue;
+    }
+
+    private String destRequestFormatter(AmadeusLocation location) {
+        String returnValue = "";
+        if (location != null) {
+            returnValue += location.getLatitude() + "," + location.getLongitude();
+        }
+        return returnValue;
+    }
 
     /**
      * Manipulates the map once available.
@@ -37,11 +85,20 @@ public class NavigationActivity extends FragmentActivity implements OnMapReadyCa
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        mapMap = googleMap;
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mapMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mapMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+    private GeoApiContext getGeoContext() {
+        GeoApiContext geoApiContext = new GeoApiContext();
+        return geoApiContext.setQueryRateLimit(3)
+                .setApiKey(getString(R.string.google_maps_key))
+                .setConnectTimeout(1, TimeUnit.SECONDS)
+                .setReadTimeout(1, TimeUnit.SECONDS)
+                .setWriteTimeout(1, TimeUnit.SECONDS);
     }
 }
