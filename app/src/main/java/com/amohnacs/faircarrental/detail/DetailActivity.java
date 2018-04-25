@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amohnacs.faircarrental.R;
+import com.amohnacs.faircarrental.navigation.NavigationActivity;
 import com.amohnacs.model.amadeus.Address;
 import com.amohnacs.model.amadeus.AmadeusLocation;
 import com.amohnacs.model.amadeus.Car;
@@ -125,7 +126,7 @@ public class DetailActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //google maps setup
         mapView.onCreate(null);
@@ -175,8 +176,10 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         navFab.setOnClickListener(v -> {
-            //todo navigation activity OR intent to Google Maps ?
 
+            startActivity(NavigationActivity.getStartIntent(
+                    this, userLocation, focusedCar.getAmadeusLocation())
+            );
         });
     }
 

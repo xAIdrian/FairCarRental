@@ -30,8 +30,10 @@ public class NavigationActivity extends FragmentActivity implements OnMapReadyCa
     private String formattedDestinationString;
     private String formattedOriginString;
 
+    private NavigationRequestObject requestObject;
+
     public static Intent getStartIntent(Activity activity, LatLngLocation origin, AmadeusLocation destination) {
-        Intent intent = new Intent(activity, DetailActivity.class);
+        Intent intent = new Intent(activity, NavigationActivity.class);
         intent.putExtra(ORIGIN_EXTRA, origin);
         intent.putExtra(DESTINATION_EXTRA, destination);
         return intent;
@@ -52,10 +54,26 @@ public class NavigationActivity extends FragmentActivity implements OnMapReadyCa
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        NavigationRequestObject requestObject = new NavigationRequestObject(
+        requestObject = new NavigationRequestObject(
                 TravelMode.DRIVING, formattedOriginString, formattedDestinationString
         );
+    }
+
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * we just add a marker near Sydney, Australia.
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mapMap = googleMap;
         new NavigationAsyncTask(getGeoContext(), mapMap).execute(requestObject);
+
+        // TODO: 4/25/18 camera bounds and zoom
     }
 
     private String originRequestFormatter(LatLngLocation location) {
@@ -72,25 +90,6 @@ public class NavigationActivity extends FragmentActivity implements OnMapReadyCa
             returnValue += location.getLatitude() + "," + location.getLongitude();
         }
         return returnValue;
-    }
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mapMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mapMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mapMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
     private GeoApiContext getGeoContext() {

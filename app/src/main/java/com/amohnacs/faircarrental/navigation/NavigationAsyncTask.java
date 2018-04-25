@@ -26,7 +26,7 @@ public class NavigationAsyncTask extends AsyncTask<NavigationRequestObject, Void
     private final GeoApiContext context;
     private final GoogleMap map;
 
-    public NavigationAsyncTask(GeoApiContext context, GoogleMap map) {
+    NavigationAsyncTask(GeoApiContext context, GoogleMap map) {
         this.context = context;
         this.map = map;
     }
