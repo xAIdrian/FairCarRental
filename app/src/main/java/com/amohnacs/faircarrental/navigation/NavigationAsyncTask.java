@@ -2,6 +2,7 @@ package com.amohnacs.faircarrental.navigation;
 
 import android.os.AsyncTask;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -11,6 +12,7 @@ import com.google.maps.GeoApiContext;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.DirectionsRoute;
 
 import org.joda.time.DateTime;
 
@@ -56,6 +58,7 @@ public class NavigationAsyncTask extends AsyncTask<NavigationRequestObject, Void
         if (directionsResult != null) {
             addMarkersToMap(directionsResult, map);
             addPolyline(directionsResult, map);
+            positionCamera(directionsResult.routes[0], map);
         }
     }
 
@@ -89,5 +92,11 @@ public class NavigationAsyncTask extends AsyncTask<NavigationRequestObject, Void
 
         List<LatLng> decodedPath = PolyUtil.decode(results.routes[0].overviewPolyline.getEncodedPath());
         uiThreadMap.addPolyline(new PolylineOptions().addAll(decodedPath));
+    }
+
+    private void positionCamera(DirectionsRoute route, GoogleMap mMap) {
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(route.legs[0].startLocation.lat, route.legs[0].startLocation.lng), 10)
+        );
     }
 }
