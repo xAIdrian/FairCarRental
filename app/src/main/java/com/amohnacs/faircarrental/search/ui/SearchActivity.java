@@ -1,8 +1,11 @@
 package com.amohnacs.faircarrental.search.ui;
 
 import android.app.AlertDialog;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
@@ -11,7 +14,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +24,6 @@ import android.widget.TextView;
 
 import com.amohnacs.common.mvp.MvpActivity;
 import com.amohnacs.faircarrental.R;
-import com.amohnacs.faircarrental.search.SortingRadioDialog;
 import com.amohnacs.faircarrental.search.contracts.SearchContract;
 import com.amohnacs.faircarrental.search.SearchPresenter;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -32,10 +33,11 @@ import java.util.Calendar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.amohnacs.faircarrental.search.SortingRadioDialog.SORTING_DIALOG_SELECTION;
+import static com.amohnacs.faircarrental.search.ui.SortingRadioDialog.SORTING_DIALOG_SELECTION;
 
 public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.View> implements SearchContract.View,
-        DatePickerDialog.OnDateSetListener, SearchResultsFragment.OnListFragmentInteractionListener, SortingRadioDialog.SortingDialogCallback {
+        DatePickerDialog.OnDateSetListener, SearchResultsFragment.OnListFragmentInteractionListener,
+        SortingRadioDialog.SortingDialogCallback {
     private static final String TAG = SearchActivity.class.getSimpleName();
 
     public static final String PICKUP_DIALOG = "pickup_dialog";
@@ -69,11 +71,13 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
     @BindView(R.id.search_fab)
     FloatingActionButton searchFloatingActionButton;
 
-    @BindView(R.id.sort_fab)
-    FloatingActionButton sortFloatingActionButton;
+    @BindView(R.id.app_bar)
+    AppBarLayout appBarLayout;
 
     private SearchPresenter presenter;
     private SearchResultsFragment searchResultFragment;
+
+    private Drawable colorChangingMenuIcon;
 
     private Calendar calendar;
     private boolean datePickerActive = false; //datepickerdialog is a little laggy
@@ -81,6 +85,9 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
 
     private String pickupString;
     private String dropOffString;
+
+    private int scrollRange;
+    private boolean isShown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,18 +143,25 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
             }
         });
 
-        sortFloatingActionButton.setOnClickListener((view) -> {
-            android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
-
-            SortingRadioDialog alert = new SortingRadioDialog();
-            Bundle b  = new Bundle();
-            b.putInt(SORTING_DIALOG_SELECTION, sortingIndex < 0 ? 1 : sortingIndex);
-            alert.setArguments(b);
-
-            alert.show(manager, SortingRadioDialog.TAG);
-        });
-
         addressEditText.addTextChangedListener(new SearchTextValidator(addressEditText));
+
+        appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+            if (scrollRange == -1) {
+                scrollRange = appBarLayout.getTotalScrollRange();
+            }
+            if (colorChangingMenuIcon != null) {
+                //scrollRange + verticalOffset == 0 is fully collapsed
+                if (scrollRange + verticalOffset > -600) {
+                    //collapse appBarLayout
+                    isShown = true;
+                    colorChangingMenuIcon.setColorFilter(getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+                } else if (isShown) {
+                    //expanded map
+                    isShown = false;
+                    colorChangingMenuIcon.setColorFilter(getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+                }
+            }
+        });
     }
 
     @Override
@@ -163,6 +177,10 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_search, menu);
+        colorChangingMenuIcon = menu.findItem(R.id.action_sort).getIcon();
+        if(colorChangingMenuIcon != null) {
+            colorChangingMenuIcon.mutate(); //makes mutable (opposite of immutable)
+        }
         return true;
     }
 
@@ -174,7 +192,15 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_sort) {
+            android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
+
+            SortingRadioDialog alert = new SortingRadioDialog();
+            Bundle b  = new Bundle();
+            b.putInt(SORTING_DIALOG_SELECTION, sortingIndex < 0 ? 1 : sortingIndex);
+            alert.setArguments(b);
+
+            alert.show(manager, SortingRadioDialog.TAG);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -250,6 +276,23 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
         presenter.onDateSetChecker(view, year, monthOfYear, dayOfMonth);
     }
 
+    @Override
+    public void resultsLoading(boolean setLoadingIndicator) {
+        progressBar.setVisibility(setLoadingIndicator ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onPositiveDialogClick(int position) {
+        //they actually changed their sorting selection
+        if (sortingIndex != position) {
+            sortingIndex = position;
+            SearchResultsFragment f = getDisplayedFragment();
+            if (f != null) {
+                f.onPositiveDialogClick(sortingIndex);
+            }
+        }
+    }
+
     private void showDatePickerDialog(String tag) {
         DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
                 this,
@@ -264,31 +307,6 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
         datePickerDialog.dismissOnPause(true);
 
         datePickerDialog.show(getFragmentManager(), tag);
-    }
-
-    @Override
-    public void resultsLoading(boolean setLoadingIndicator) {
-        if (setLoadingIndicator) {
-            progressBar.setVisibility(View.VISIBLE);
-            sortFloatingActionButton.setVisibility(View.GONE);
-        } else {
-            progressBar.setVisibility(View.GONE);
-            searchFloatingActionButton.setVisibility(View.GONE);
-
-            sortFloatingActionButton.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void onPositiveDialogClick(int position) {
-        //they actually changed their sorting selection
-        if (sortingIndex != position) {
-            sortingIndex = position;
-            SearchResultsFragment f = getDisplayedFragment();
-            if (f != null) {
-                f.onPositiveDialogClick(sortingIndex);
-            }
-        }
     }
 
     public SearchResultsFragment getDisplayedFragment() {
@@ -312,11 +330,6 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             //no op
-            Log.e(TAG, "onFocus");
-            if (searchFloatingActionButton.getVisibility() != View.VISIBLE) {
-                searchFloatingActionButton.setVisibility(View.VISIBLE);
-                sortFloatingActionButton.setVisibility(View.GONE);
-            }
         }
 
         @Override

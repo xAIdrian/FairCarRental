@@ -1,4 +1,4 @@
-package com.amohnacs.faircarrental.search;
+package com.amohnacs.faircarrental.search.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

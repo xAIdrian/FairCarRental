@@ -160,7 +160,6 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
      * @param position
      */
     public void onPositiveDialogClick(int position) {
-        Log.e(TAG, "sorting index = " + position);
         if (!carList.isEmpty()) {
             switch (position) {
                 case 0:

@@ -27,6 +27,7 @@ public interface SearchResultsContract {
 
     interface Presenter {
         void getCars(String addressQueryString, String pickupSelection, String dropoffSelection);
+
         void sortCarsByCompanyDescending();
         void sortCarsByDistanceDescending();
         void sortCarsByPriceDescending();
