@@ -1,10 +1,13 @@
 package com.amohnacs.faircarrental.navigation;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import com.amohnacs.faircarrental.R;
 import com.amohnacs.model.amadeus.AmadeusLocation;
@@ -17,7 +20,7 @@ import com.google.maps.model.TravelMode;
 
 import java.util.concurrent.TimeUnit;
 
-public class NavigationActivity extends FragmentActivity implements OnMapReadyCallback {
+public class NavigationActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = NavigationActivity.class.getSimpleName();
 
     private static final String ORIGIN_EXTRA = "origin_extra";
@@ -40,6 +43,11 @@ public class NavigationActivity extends FragmentActivity implements OnMapReadyCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.navigation_activity);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (getIntent().getExtras() != null) {
             formattedOriginString = originRequestFormatter(getIntent().getExtras().getParcelable(ORIGIN_EXTRA));
