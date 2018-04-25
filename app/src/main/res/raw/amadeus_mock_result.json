@@ -1,0 +1,155 @@
+{
+  "results": [
+    {
+      "provider": {
+        "company_code": "ZR",
+        "company_name": "DOLLAR"
+      },
+      "location": {
+        "latitude": 37.80676,
+        "longitude": -122.41365
+      },
+      "address": {
+        "line1": "2500 MASON STREET",
+        "city": "SAN FRANCISCO",
+        "region": "CA",
+        "country": "US"
+      },
+      "cars": [
+        {
+          "vehicle_info": {
+            "acriss_code": "XXAR",
+            "transmission": "Automatic",
+            "fuel": "Unspecified",
+            "air_conditioning": true,
+            "category": "Special",
+            "type": "Special"
+          },
+          "rates": [
+            {
+              "type": "DAILY",
+              "price": {
+                "amount": "51.11",
+                "currency": "EUR"
+              }
+            }, {
+              "type": "DAILY",
+              "price": {
+                "amount": "55.00",
+                "currency": "USD"
+              }
+            }
+          ],
+          "estimated_total": {
+            "amount": "113.81",
+            "currency": "EUR"
+          }
+        }
+      ]
+    }, {
+      "provider": {
+        "company_code": "ZE",
+        "company_name": "HERTZ"
+      },
+      "location": {
+        "latitude": 37.71667,
+        "longitude": -122.2167
+      },
+      "airport": "OAK",
+      "address": {
+        "line1": " 7600 EARHART ROAD, SUITE 1",
+        "city": "OAKLAND AP",
+        "region": "CA",
+        "postal_code": "94621",
+        "country": "US"
+      },
+      "cars": [
+        {
+          "vehicle_info": {
+            "acriss_code": "ECAR",
+            "transmission": "Automatic",
+            "fuel": "Unspecified",
+            "air_conditioning": true,
+            "category": "Economy",
+            "type": "2/4 Door"
+          },
+          "rates": [
+            {
+              "type": "WEEKEND",
+              "price": {
+                "amount": "41.63",
+                "currency": "EUR"
+              }
+            }, {
+              "type": "WEEKEND",
+              "price": {
+                "amount": "44.80",
+                "currency": "USD"
+              }
+            }
+          ],
+          "estimated_total": {
+            "amount": "83.26",
+            "currency": "EUR"
+          }
+        }, {
+          "vehicle_info": {
+            "acriss_code": "PCAR",
+            "transmission": "Automatic",
+            "fuel": "Unspecified",
+            "air_conditioning": true,
+            "category": "Premium",
+            "type": "2/4 Door"
+          },
+          "rates": [
+            {
+              "type": "WEEKEND",
+              "price": {
+                "amount": "57.24",
+                "currency": "EUR"
+              }
+            }, {
+              "type": "WEEKEND",
+              "price": {
+                "amount": "61.60",
+                "currency": "USD"
+              }
+            }
+          ],
+          "estimated_total": {
+            "amount": "114.48",
+            "currency": "EUR"
+          }
+        }, {
+          "vehicle_info": {
+            "acriss_code": "LCAR",
+            "transmission": "Automatic",
+            "fuel": "Unspecified",
+            "air_conditioning": true,
+            "category": "Luxury",
+            "type": "2/4 Door"
+          },
+          "rates": [
+            {
+              "type": "WEEKEND",
+              "price": {
+                "amount": "91.06",
+                "currency": "EUR"
+              }
+            }, {
+              "type": "WEEKEND",
+              "price": {
+                "amount": "98.00",
+                "currency": "USD"
+              }
+            }
+          ],
+          "estimated_total": {
+            "amount": "182.12",
+            "currency": "EUR"
+          }
+        }
+      ]
+    }
+  ]
+}

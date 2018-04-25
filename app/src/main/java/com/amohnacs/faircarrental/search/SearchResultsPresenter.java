@@ -29,9 +29,20 @@ public class SearchResultsPresenter extends BasePresenter<SearchResultsContract.
     private ArrayList<Car> resultsForSorting;
     private LatLngLocation userLocation;
 
+    private int sortingIndex = 1;
+
     private SearchResultsPresenter(Context context) {
         provider = CarSearchProvider.getInstance(context);
 
+        resultsForSorting = new ArrayList<>();
+    }
+
+    /**
+     * This class is to be used for test purposes only and <b>should NOT be called</b> in the <i>main</i>
+     * package of the application
+     */
+    @Deprecated
+    public SearchResultsPresenter() {
         resultsForSorting = new ArrayList<>();
     }
 
@@ -48,112 +59,9 @@ public class SearchResultsPresenter extends BasePresenter<SearchResultsContract.
 
     @Override
     public void getCars(String addressQueryString, String pickupSelection, String dropoffSelection) {
+        this.sortingIndex = sortingIndex;
         String apiFriendlyAddress = addressQueryString.replace(" ", " +");
         provider.carSearch(this, apiFriendlyAddress, pickupSelection, dropoffSelection);
-    }
-
-    @Override
-    public void sortCarsByCompanyDescending() {
-        Log.e(TAG, "company descending");
-        if (resultsForSorting != null && !resultsForSorting.isEmpty()) {
-            Collections.sort(resultsForSorting, new Comparator<Car>() {
-                @Override
-                public int compare(Car o1, Car o2) {
-                    return o2.getCompanyName().compareTo(o1.getCompanyName());
-                }
-            });
-            if (isViewAttached()) {
-                getMvpView().updateCarSearchResults(resultsForSorting);
-            }
-        }
-    }
-
-    @Override
-    public void sortCarsByDistanceDescending() {
-        Log.e(TAG, "distance descending");
-        if (resultsForSorting != null && !resultsForSorting.isEmpty()) {
-            Collections.sort(resultsForSorting,new Comparator<Car>() {
-                @Override
-                public int compare(Car car1, Car car2) {
-                    int inter1 = (int) car1.getUserDistanceToThisCar();
-                    int inter2 = (int) car2.getUserDistanceToThisCar();
-
-                    return inter2 - inter1;
-                }
-            });
-            if (isViewAttached()) {
-                getMvpView().updateCarSearchResults(resultsForSorting);
-            }
-        }
-    }
-
-    @Override
-    public void sortCarsByPriceDescending() {
-        Log.e(TAG, "price descending");
-        if (resultsForSorting != null && !resultsForSorting.isEmpty()) {
-            Collections.sort(resultsForSorting,new Comparator<Car>() {
-                @Override
-                public int compare(Car car1, Car car2) {
-
-                    return (int) (car2.getEstimatedTotal().getAmount() - car1.getEstimatedTotal().getAmount());
-                }
-            });
-            if (isViewAttached()) {
-                getMvpView().updateCarSearchResults(resultsForSorting);
-            }
-        }
-    }
-
-    @Override
-    public void sortCarsByCompanyAscending() {
-        Log.e(TAG, "company descending");
-        if (resultsForSorting != null && !resultsForSorting.isEmpty()) {
-            Collections.sort(resultsForSorting, new Comparator<Car>() {
-                @Override
-                public int compare(Car o1, Car o2) {
-                    return o1.getCompanyName().compareTo(o2.getCompanyName());
-                }
-            });
-            if (isViewAttached()) {
-                getMvpView().updateCarSearchResults(resultsForSorting);
-            }
-        }
-    }
-
-    @Override
-    public void sortCarsByDistanceAscending() {
-        Log.e(TAG, "distance descending");
-        if (resultsForSorting != null && !resultsForSorting.isEmpty()) {
-            Collections.sort(resultsForSorting,new Comparator<Car>() {
-                @Override
-                public int compare(Car car1, Car car2) {
-                    int inter1 = (int) car1.getUserDistanceToThisCar();
-                    int inter2 = (int) car2.getUserDistanceToThisCar();
-
-                    return inter1 - inter2;
-                }
-            });
-            if (isViewAttached()) {
-                getMvpView().updateCarSearchResults(resultsForSorting);
-            }
-        }
-    }
-
-    @Override
-    public void sortCarsByPriceAscending() {
-        Log.e(TAG, "price descending");
-        if (resultsForSorting != null && !resultsForSorting.isEmpty()) {
-            Collections.sort(resultsForSorting,new Comparator<Car>() {
-                @Override
-                public int compare(Car car1, Car car2) {
-
-                    return (int) (car1.getEstimatedTotal().getAmount() - car2.getEstimatedTotal().getAmount());
-                }
-            });
-            if (isViewAttached()) {
-                getMvpView().updateCarSearchResults(resultsForSorting);
-            }
-        }
     }
 
     @Override
@@ -179,10 +87,26 @@ public class SearchResultsPresenter extends BasePresenter<SearchResultsContract.
         }
         resultsForSorting.addAll(carList);
 
-        if (isViewAttached()) {
-            getMvpView().updateCarSearchResults(resultsForSorting);
+        switch (sortingIndex) {
+            case 0:
+                sortCarsByCompanyAscending();
+                break;
+            case 1:
+                sortCarsByCompanyDescending();
+                break;
+            case 2:
+                sortCarsByDistanceAscending();
+                break;
+            case 3:
+                sortCarsByDistanceDescending();
+                break;
+            case 4:
+                sortCarsByPriceAscending();
+                break;
+            case 5:
+                sortCarsByPriceDescending();
+                break;
         }
-
     }
 
     @Override
@@ -193,5 +117,82 @@ public class SearchResultsPresenter extends BasePresenter<SearchResultsContract.
     @Nullable
     public LatLngLocation getUserLatLngLocation() {
         return userLocation;
+    }
+
+    @Override
+    public void sortCarsByCompanyDescending() {
+        if (resultsForSorting != null && !resultsForSorting.isEmpty()) {
+            Collections.sort(resultsForSorting, new Comparator<Car>() {
+                @Override
+                public int compare(Car o1, Car o2) {
+                    return o2.getCompanyName().compareTo(o1.getCompanyName());
+                }
+            });
+            if (isViewAttached()) {
+                getMvpView().updateCarSearchResults(resultsForSorting);
+            }
+        }
+    }
+
+    @Override
+    public void sortCarsByDistanceDescending() {
+        if (resultsForSorting != null && !resultsForSorting.isEmpty()) {
+            Collections.sort(resultsForSorting, (car1, car2) -> {
+                int inter1 = (int) car1.getUserDistanceToThisCar();
+                int inter2 = (int) car2.getUserDistanceToThisCar();
+
+                return inter2 - inter1;
+            });
+            if (isViewAttached()) {
+                getMvpView().updateCarSearchResults(resultsForSorting);
+            }
+        }
+    }
+
+    @Override
+    public void sortCarsByPriceDescending() {
+        if (resultsForSorting != null && !resultsForSorting.isEmpty()) {
+            Collections.sort(resultsForSorting, (car1, car2) ->
+                    (int) (car2.getEstimatedTotal().getAmount() - car1.getEstimatedTotal().getAmount()));
+            if (isViewAttached()) {
+                getMvpView().updateCarSearchResults(resultsForSorting);
+            }
+        }
+    }
+
+    @Override
+    public void sortCarsByCompanyAscending() {
+        if (resultsForSorting != null && !resultsForSorting.isEmpty()) {
+            Collections.sort(resultsForSorting, Comparator.comparing(Car::getCompanyName));
+            if (isViewAttached()) {
+                getMvpView().updateCarSearchResults(resultsForSorting);
+            }
+        }
+    }
+
+    @Override
+    public void sortCarsByDistanceAscending() {
+        if (resultsForSorting != null && !resultsForSorting.isEmpty()) {
+            Collections.sort(resultsForSorting, (car1, car2) -> {
+                int inter1 = (int) car1.getUserDistanceToThisCar();
+                int inter2 = (int) car2.getUserDistanceToThisCar();
+
+                return inter1 - inter2;
+            });
+            if (isViewAttached()) {
+                getMvpView().updateCarSearchResults(resultsForSorting);
+            }
+        }
+    }
+
+    @Override
+    public void sortCarsByPriceAscending() {
+        if (resultsForSorting != null && !resultsForSorting.isEmpty()) {
+            Collections.sort(resultsForSorting, (car1, car2) ->
+                    (int) (car1.getEstimatedTotal().getAmount() - car2.getEstimatedTotal().getAmount()));
+            if (isViewAttached()) {
+                getMvpView().updateCarSearchResults(resultsForSorting);
+            }
+        }
     }
 }

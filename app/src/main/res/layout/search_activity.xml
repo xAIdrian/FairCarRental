@@ -14,7 +14,7 @@
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay"
         android:background="@android:color/white"
-        android:elevation="@dimen/default_elevation">
+        android:stateListAnimator="@animator/app_bar_elevation_state">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/toolbar_layout"
@@ -37,15 +37,17 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/search_content" />
+    <include
+        android:id="@+id/drrr"
+        layout="@layout/search_content" />
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:paddingTop="@dimen/header_margin"/>
+        app:layout_anchorGravity="center"
+        app:layout_anchor="@id/drrr"
+        android:visibility="gone"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/search_fab"
@@ -57,17 +59,5 @@
         app:srcCompat="@drawable/ic_magnify_white"
         android:backgroundTint="@color/colorPrimary"
         android:elevation="@dimen/default_elevation" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/sort_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@drawable/ic_sort"
-        android:backgroundTint="@color/sort_blue"
-        android:elevation="@dimen/default_elevation"
-        android:visibility="invisible"/>
 
 </android.support.design.widget.CoordinatorLayout>

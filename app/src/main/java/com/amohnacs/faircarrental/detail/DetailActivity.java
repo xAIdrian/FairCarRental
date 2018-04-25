@@ -83,9 +83,6 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.list)
     RecyclerView recyclerView;
 
-    @BindView(R.id.car_imageView)
-    ImageView carImageView;
-
     private GoogleMap map;
 
     private Car focusedCar;
@@ -116,15 +113,12 @@ public class DetailActivity extends AppCompatActivity {
             focusedCar = savedInstanceState.getParcelable(SAVED_INSTANCE_STATE_CAR);
             userLocation = savedInstanceState.getParcelable(SAVED_INSTANCE_STATE_USER_LOCATION);
         }
-
-        if (focusedCar == null) {
-            throw new IllegalArgumentException("No car was passed to Detail Activity.  Something went very wrong");
-        }
         vi = focusedCar.getVehicleInfo();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Near " + focusedCar.getAddress().getLine1());
 
         //google maps setup
         mapView.onCreate(null);
@@ -139,8 +133,10 @@ public class DetailActivity extends AppCompatActivity {
 
         final CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
 
-        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.transparent));
-        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.transparent));
+        if (getResources().getConfiguration().orientation == getResources().getConfiguration().ORIENTATION_PORTRAIT) {
+            collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.transparent));
+            collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
+        }
 
         String title = vi.getAcrissCode() + " : " + vi.getCategory() + " " + vi.getType();
         companyTitleTextView.setText(title);
@@ -186,7 +182,7 @@ public class DetailActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);

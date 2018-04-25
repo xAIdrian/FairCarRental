@@ -1,6 +1,7 @@
 package com.amohnacs.faircarrental.navigation;
 
 import android.os.AsyncTask;
+import android.support.v7.widget.RecyclerView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,10 +28,12 @@ public class NavigationAsyncTask extends AsyncTask<NavigationRequestObject, Void
 
     private final GeoApiContext context;
     private final GoogleMap map;
+    private final RecyclerView recyclerView; //possible leak handled by killing this task in Activity's onStop()
 
-    NavigationAsyncTask(GeoApiContext context, GoogleMap map) {
+    NavigationAsyncTask(GeoApiContext context, GoogleMap map, RecyclerView recyclerView) {
         this.context = context;
         this.map = map;
+        this.recyclerView = recyclerView;
     }
 
     @Override
@@ -59,6 +62,9 @@ public class NavigationAsyncTask extends AsyncTask<NavigationRequestObject, Void
             addMarkersToMap(directionsResult, map);
             addPolyline(directionsResult, map);
             positionCamera(directionsResult.routes[0], map);
+
+            recyclerView.setAdapter(new StepsAdapter(
+                    directionsResult.routes[0].legs[0].steps));
         }
     }
 
