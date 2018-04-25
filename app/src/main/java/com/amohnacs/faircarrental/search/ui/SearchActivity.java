@@ -11,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -149,6 +150,7 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
             if (scrollRange == -1) {
                 scrollRange = appBarLayout.getTotalScrollRange();
             }
+            //change the color of the menu icon
             if (colorChangingMenuIcon != null) {
                 //scrollRange + verticalOffset == 0 is fully collapsed
                 if (scrollRange + verticalOffset > -600) {
