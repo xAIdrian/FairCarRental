@@ -2,19 +2,16 @@ package com.amohnacs.faircarrental.navigation;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
 import com.amohnacs.faircarrental.R;
-import com.amohnacs.faircarrental.detail.DetailActivity;
 import com.amohnacs.model.amadeus.AmadeusLocation;
 import com.amohnacs.model.googlemaps.LatLngLocation;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.GeoApiContext;
 import com.google.maps.model.TravelMode;
 
@@ -42,7 +39,7 @@ public class NavigationActivity extends FragmentActivity implements OnMapReadyCa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_navigation);
+        setContentView(R.layout.navigation_activity);
 
         if (getIntent().getExtras() != null) {
             formattedOriginString = originRequestFormatter(getIntent().getExtras().getParcelable(ORIGIN_EXTRA));
@@ -71,9 +68,9 @@ public class NavigationActivity extends FragmentActivity implements OnMapReadyCa
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mapMap = googleMap;
-        new NavigationAsyncTask(getGeoContext(), mapMap).execute(requestObject);
-
-        // TODO: 4/25/18 camera bounds and zoom
+        if (requestObject != null) {
+            new NavigationAsyncTask(getGeoContext(), mapMap).execute(requestObject);
+        }
     }
 
     private String originRequestFormatter(LatLngLocation location) {
