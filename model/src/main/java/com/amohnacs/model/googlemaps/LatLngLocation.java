@@ -13,21 +13,21 @@ public class LatLngLocation implements Parcelable
 {
 
     @SerializedName("lat")
-    private float lat;
+    private float latitude;
     @SerializedName("lng")
-    private float longg;
+    private float longitude;
 
     public LatLngLocation() {
     }
 
-    public LatLngLocation(float lat, float longg) {
-        this.lat = lat;
-        this.longg = longg;
+    public LatLngLocation(float lat, float longitude) {
+        this.latitude = lat;
+        this.longitude = longitude;
     }
 
     protected LatLngLocation(Parcel in) {
-        lat = in.readFloat();
-        longg = in.readFloat();
+        latitude = in.readFloat();
+        longitude = in.readFloat();
     }
 
     public static final Creator<LatLngLocation> CREATOR = new Creator<LatLngLocation>() {
@@ -42,20 +42,20 @@ public class LatLngLocation implements Parcelable
         }
     };
 
-    public float getLat() {
-        return lat;
+    public float getLatitude() {
+        return latitude;
     }
 
-    public void setLat(float lat) {
-        this.lat = lat;
+    public void setLatitude(float lat) {
+        this.latitude = lat;
     }
 
-    public float getLongg() {
-        return longg;
+    public float getLongitude() {
+        return longitude;
     }
 
-    public void setLongg(float longg) {
-        this.longg = longg;
+    public void setLongitude(float longitude) {
+        this.longitude = longitude;
     }
 
     @Override
@@ -65,7 +65,7 @@ public class LatLngLocation implements Parcelable
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeFloat(lat);
-        dest.writeFloat(longg);
+        dest.writeFloat(latitude);
+        dest.writeFloat(longitude);
     }
 }

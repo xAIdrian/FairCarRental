@@ -5,16 +5,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amohnacs.faircarrental.R;
+import com.amohnacs.faircarrental.navigation.NavigationActivity;
 import com.amohnacs.model.amadeus.Address;
 import com.amohnacs.model.amadeus.AmadeusLocation;
 import com.amohnacs.model.amadeus.Car;
@@ -123,6 +124,7 @@ public class DetailActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //google maps setup
         mapView.onCreate(null);
@@ -172,9 +174,22 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         navFab.setOnClickListener(v -> {
-            //todo navigation activity OR intent to Google Maps ?
 
+            startActivity(NavigationActivity.getStartIntent(
+                    this, userLocation, focusedCar.getAmadeusLocation())
+            );
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

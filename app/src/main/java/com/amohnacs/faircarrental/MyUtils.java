@@ -6,8 +6,6 @@ import com.amohnacs.model.googlemaps.LatLngLocation;
 
 import java.text.DecimalFormat;
 
-import okhttp3.internal.Util;
-
 /**
  * Created by adrianmohnacs on 4/22/18.
  */
@@ -46,7 +44,7 @@ public class MyUtils {
         DecimalFormat decimalFormat = new DecimalFormat();
         decimalFormat.setMaximumFractionDigits(2);
 
-        return distance(userLocation.getLat(), userLocation.getLongg(),
+        return distance(userLocation.getLatitude(), userLocation.getLongitude(),
                 car.getAmadeusLocation().getLatitude(), car.getAmadeusLocation().getLongitude());
     }
 
@@ -54,7 +52,7 @@ public class MyUtils {
         DecimalFormat decimalFormat = new DecimalFormat();
         decimalFormat.setMaximumFractionDigits(2);
 
-        float distance = MyUtils.distance(userLocation.getLat(), userLocation.getLongg(),
+        float distance = MyUtils.distance(userLocation.getLatitude(), userLocation.getLongitude(),
                 amadeusLocation.getLatitude(), amadeusLocation.getLongitude());
         String distanceString = decimalFormat.format(distance);
         return DISTANCE_PREPEND + distanceString + " km";
