@@ -21,7 +21,6 @@ import com.amohnacs.model.amadeus.Car;
 import com.amohnacs.model.amadeus.Image;
 import com.amohnacs.model.amadeus.VehicleInfo;
 import com.amohnacs.model.googlemaps.LatLngLocation;
-import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -169,10 +168,7 @@ public class DetailActivity extends AppCompatActivity {
 
         Image image = focusedCar.getImage();
         if (image != null) {
-            Glide
-                    .with(this)
-                    .load(image.getUrl())
-                    .into(carImageView);
+            //// TODO: 4/24/18
         }
 
         navFab.setOnClickListener(v -> {
