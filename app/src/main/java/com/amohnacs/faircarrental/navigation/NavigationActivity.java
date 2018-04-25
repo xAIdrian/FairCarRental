@@ -13,6 +13,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.amohnacs.faircarrental.R;
 import com.amohnacs.faircarrental.detail.RateAdapter;
@@ -84,6 +85,17 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
         requestObject = new NavigationRequestObject(
                 TravelMode.DRIVING, formattedOriginString, formattedDestinationString
         );
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

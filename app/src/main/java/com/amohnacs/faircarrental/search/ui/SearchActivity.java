@@ -79,17 +79,25 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
     private boolean datePickerActive = false; //datepickerdialog is a little laggy
     private int sortingIndex = 1;
 
+    private String pickupString;
+    private String dropOffString;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity);
 
-        if (savedInstanceState != null) {
-            sortingIndex = savedInstanceState.getInt(SAVED_INSTANCE_STATE_DIALOG_POSITION);
-        }
-
         ButterKnife.bind(this);
         presenter = SearchPresenter.getInstance(this);
+
+        if (savedInstanceState != null) {
+            sortingIndex = savedInstanceState.getInt(SAVED_INSTANCE_STATE_DIALOG_POSITION);
+            pickupString = savedInstanceState.getString(SAVED_INSTANCE_STATE_PICKUP_DATE);
+            dropOffString = savedInstanceState.getString(SAVED_INSTANCE_STATE_DROP_OFF_DATE);
+
+            pickUpResultTextView.setText(pickupString);
+            dropOffResultTextView.setText(dropOffString);
+        }
 
         SearchResultsFragment fragment = (SearchResultsFragment) getSupportFragmentManager().findFragmentByTag(SearchResultsFragment.TAG);
         if (fragment == null) {
@@ -145,6 +153,9 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(SAVED_INSTANCE_STATE_DIALOG_POSITION, sortingIndex);
+        outState.putString(SAVED_INSTANCE_STATE_PICKUP_DATE, pickupString);
+        outState.putString(SAVED_INSTANCE_STATE_DROP_OFF_DATE, dropOffString);
+
         super.onSaveInstanceState(outState);
     }
 
@@ -196,6 +207,7 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
     @Override
     public void displayDateSelection(String dialogIdentifier, String dateString) {
         if (dialogIdentifier.equals(PICKUP_DIALOG)) {
+            pickupString = dateString;
             pickUpResultTextView.setText(dateString);
 
             dropoffButton.setCompoundDrawablesWithIntrinsicBounds(
@@ -203,6 +215,7 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
             pickupButton.setCompoundDrawablesWithIntrinsicBounds(
                     0, R.drawable.ic_calendar_today_accent, 0, 0);
         } else {
+            dropOffString = dateString;
             dropOffResultTextView.setText(dateString);
 
             dropoffButton.setCompoundDrawablesWithIntrinsicBounds(
