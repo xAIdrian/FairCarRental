@@ -101,15 +101,6 @@
             android:paddingStart="@dimen/double_padding"
             android:paddingEnd="@dimen/double_padding" />
 
-        <ImageView
-            android:id="@+id/car_imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/double_padding"
-            android:src="@drawable/ic_car_placeholder"
-            android:scaleType="centerInside"
-            android:layout_gravity="center"/>
-
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

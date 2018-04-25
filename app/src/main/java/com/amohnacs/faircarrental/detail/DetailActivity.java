@@ -139,8 +139,10 @@ public class DetailActivity extends AppCompatActivity {
 
         final CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
 
-        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.transparent));
-        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.transparent));
+        if (getResources().getConfiguration().orientation == getResources().getConfiguration().ORIENTATION_PORTRAIT) {
+            collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.transparent));
+            collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.transparent));
+        }
 
         String title = vi.getAcrissCode() + " : " + vi.getCategory() + " " + vi.getType();
         companyTitleTextView.setText(title);
