@@ -40,7 +40,10 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
 
     public static final String PICKUP_DIALOG = "pickup_dialog";
     public static final String DROPOFF_DIALOG = "dropoff_dialog";
+
     private static final String SAVED_INSTANCE_STATE_DIALOG_POSITION = "saved_instance_state_dialog_position";
+    private static final String SAVED_INSTANCE_STATE_PICKUP_DATE = "saved_instance_state_pickup_date";
+    private static final String SAVED_INSTANCE_STATE_DROP_OFF_DATE = "saved_instance_state_dropoff_date";
 
     @BindView(R.id.address_wrapper)
     TextInputLayout addressWrapper;

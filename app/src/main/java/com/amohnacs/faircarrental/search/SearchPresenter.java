@@ -29,7 +29,7 @@ public class SearchPresenter extends BasePresenter<SearchContract.View> implemen
     private static final String DATE_HELPER_ZERO = "0";
 
     SimpleDateFormat stringQueryFormat;
-    Date todaysDate;
+    Date yesterday;
 
     private boolean addressIsValid = false;
     private Date pickupDate;
@@ -41,7 +41,7 @@ public class SearchPresenter extends BasePresenter<SearchContract.View> implemen
         this.context = context;
 
         stringQueryFormat = new SimpleDateFormat("yyyy-MM-dd");
-        todaysDate = new Date();
+        yesterday = new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24));
     }
 
     public static SearchPresenter getInstance(Context context) {
@@ -109,7 +109,7 @@ public class SearchPresenter extends BasePresenter<SearchContract.View> implemen
             String pickupSelection = stringQueryFormat.format(pickupDate);
             String dropoffSelection = stringQueryFormat.format(dropoffDate);
 
-            if (!pickupDate.after(todaysDate)) {
+            if (!pickupDate.after(yesterday)) {
                 //check to see if date is before today
                 if (isViewAttached()) {
                     getMvpView().searchParamError(R.string.pickup_before_today);

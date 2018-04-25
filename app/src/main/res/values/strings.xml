@@ -11,7 +11,7 @@
     <string name="date_missing_error">Looks like you forgot to enter your Pickup or Drop-off dates!</string>
     <string name="ok">OK</string>
     <string name="cancel">CANCEL</string>
-    <string name="pickup_before_today">Unfortunately, time travel isn\'t possible yet.  You can\'t pickup the car before tomorrow\'s date</string>
+    <string name="pickup_before_today">Unfortunately, time travel isn\'t possible yet.  You can\'t pickup the car before today\'s date</string>
     <string name="pickup_after_dropoff">You need your car before you can drop it off.  Your selected pickup date is after the drop-off date.</string>
     <string name="invalid_address">This amadeusLocation doesn\'t exist :/</string>
     <string name="title_activity_maps">Map</string>
