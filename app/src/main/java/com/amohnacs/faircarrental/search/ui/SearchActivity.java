@@ -253,6 +253,8 @@ public class SearchActivity extends MvpActivity<SearchPresenter, SearchContract.
 
     @Override
     public void searchParamError(@StringRes int messageRes) {
+        datePickerActive = false;
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(messageRes)
                 .setTitle(R.string.param_error_title)
