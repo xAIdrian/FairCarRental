@@ -73,7 +73,7 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
         }
 
         presenter = SearchResultsPresenter.getInstance(getActivity());
-        adapter = new CarAdapter(carList, this, getActivity(), presenter);
+        adapter = new CarAdapter(carList, this, presenter);
     }
 
     @Override
