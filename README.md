@@ -1,8 +1,19 @@
 <img width="1280" alt="screen shot 2018-04-25 at 1 56 19 am" src="https://user-images.githubusercontent.com/7444521/39235864-f0848110-482b-11e8-9b96-bd5c5f06301a.png">
 
 # FairCarRental
-### by Adrian Mohnacs
+### Developed by Adrian Mohnacs
 https://github.com/wearefair/interview/blob/master/ios/README.md
+
+Improvements to Be Made:
+
+* Architecture Components, MVVM, and Databinding (start with Search)
+* Ensure that resources are only fetched in 
+* Common folder can be removed if we use androidx and extend ViewModel()
+* Include a Domain Layer class (DataController/Interactor) that will get the data from the Retrofit Service and make data "fetchable" by ViewModel
+
+* LET'S PUT THIS ON THE PLAY STORE
+* Convert POJOs to Kotlin Data Classes. Can we use inheritence with any of these objects to remove duplicate code...don't forget to include parcelables!
+* Adapter/ViewHolder databinding
 
 Android application that pulls data from the Car Rental Geosearch API provide by Amadeus Travel and Google Map  and Directions APIs.  The MVP design pattern is used in coordination with clean architecture principles to ensure a separation of responsibilites and loose coupling betwen layers.
 
