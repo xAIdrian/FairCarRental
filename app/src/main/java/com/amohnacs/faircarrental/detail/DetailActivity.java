@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.amohnacs.faircarrental.R;
 import com.amohnacs.faircarrental.navigation.NavigationActivity;
+import com.amohnacs.faircarrental.search.CarAdapter;
 import com.amohnacs.model.amadeus.Address;
 import com.amohnacs.model.amadeus.AmadeusLocation;
 import com.amohnacs.model.amadeus.Car;
@@ -36,7 +37,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.amohnacs.faircarrental.MyUtils.getDistanceString;
-import static com.amohnacs.faircarrental.search.CarAdapter.PRICE_PREPEND;
 
 public class DetailActivity extends AppCompatActivity {
     private static final String TAG = DetailActivity.class.getSimpleName();
@@ -152,7 +152,7 @@ public class DetailActivity extends AppCompatActivity {
         );
 
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
-        String output = PRICE_PREPEND + formatter.format(focusedCar.getEstimatedTotal().getAmount());
+        String output = CarAdapter.Companion.getPRICE_PREPEND() + formatter.format(focusedCar.getEstimatedTotal().getAmount());
         priceTextView.setText(output);
 
         transmissionTextView.setText(vi.getTransmission());

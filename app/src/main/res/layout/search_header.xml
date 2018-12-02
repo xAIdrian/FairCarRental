@@ -1,95 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="@dimen/header_margin"
-    android:paddingStart="@dimen/header_margin"
-    android:paddingEnd="@dimen/header_margin"
-    android:paddingBottom="?attr/actionBarSize"
-    android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.amohnacs.faircarrental.search.MainViewModel" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/search_title"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/primaryText"
-        android:layout_marginTop="@dimen/extra_large_padding"/>
+        android:orientation="vertical"
+        android:paddingBottom="?attr/actionBarSize"
+        android:paddingEnd="@dimen/header_margin"
+        android:paddingStart="@dimen/header_margin"
+        android:paddingTop="@dimen/header_margin">
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/address_wrapper"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/EditTextHint"
-        android:layout_marginTop="@dimen/default_padding">
-
-        <EditText
-            android:id="@+id/address_editText"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorAccent"
-            android:drawableStart="@drawable/ic_map_marker_accent"
-            android:hint="@string/address_hint"
-            android:textColor="@color/colorAccent"/>
+            android:layout_marginTop="@dimen/extra_large_padding"
+            android:text="@string/search_title"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/primaryText" />
 
-    </android.support.design.widget.TextInputLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="2"
-        android:layout_marginTop="@dimen/extra_large_padding">
-
-        <Button
-            android:id="@+id/pickup_button"
-            android:layout_width="0dp"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/address_wrapper"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:drawableTop="@drawable/ic_calendar_today_primary"
-            android:text="@string/pickup_date"
-            android:textColor="@color/colorAccent"
-            android:gravity="center"
-            android:background="@color/transparent"/>
+            android:layout_marginTop="@dimen/default_padding"
+            android:theme="@style/EditTextHint">
 
-        <Button
-            android:id="@+id/dropoff_button"
-            android:layout_width="0dp"
+            <EditText
+                android:id="@+id/address_editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorAccent"
+                android:drawableStart="@drawable/ic_map_marker_accent"
+                android:hint="@string/address_hint"
+                android:textColor="@color/colorAccent" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:drawableTop="@drawable/ic_calendar_accent"
-            android:text="@string/dropoff_date"
-            android:textColor="@color/colorAccent"
-            android:gravity="center"
-            android:background="@color/transparent"/>
+            android:layout_marginTop="@dimen/extra_large_padding"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/pickup_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/transparent"
+                android:drawableTop="@drawable/ic_calendar_today_primary"
+                android:gravity="center"
+                android:text="@string/pickup_date"
+                android:textColor="@color/colorAccent"
+                android:onClick="@{() -> viewmodel.onPickupButtonClick()}"/>
+
+            <Button
+                android:id="@+id/dropoff_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/transparent"
+                android:drawableTop="@drawable/ic_calendar_accent"
+                android:gravity="center"
+                android:text="@string/dropoff_date"
+                android:textColor="@color/colorAccent"
+                android:onClick="@{() -> viewmodel.onDropoffButtonClick()}"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/double_padding"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/pickup_result_textView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/secondaryText" />
+
+            <TextView
+                android:id="@+id/dropoff_result_textView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/secondaryText" />
+
+        </LinearLayout>
 
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="2"
-        android:layout_marginTop="@dimen/double_padding">
-
-        <TextView
-            android:id="@+id/pickup_result_textView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/secondaryText"
-            android:gravity="center"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-        <TextView
-            android:id="@+id/dropoff_result_textView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/secondaryText"
-            android:gravity="center"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-    </LinearLayout>
-
-</LinearLayout>
+</layout>

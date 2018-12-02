@@ -13,7 +13,7 @@
     <string name="cancel">CANCEL</string>
     <string name="pickup_before_today">Unfortunately, time travel isn\'t possible yet.  You can\'t pickup the car before today\'s date</string>
     <string name="pickup_after_dropoff">You need your car before you can drop it off.  Your selected pickup date is after the drop-off date.</string>
-    <string name="invalid_address">This amadeusLocation doesn\'t exist :/</string>
+    <string name="invalid_address">This location doesn\'t exist in Amadeus :/</string>
     <string name="title_activity_maps">Map</string>
     <string name="empty_string">Nothing to see here.\nTry searching for your dream car above.</string>
     <string name="company">Company</string>
@@ -40,4 +40,5 @@
     <string name="drive">Drive</string>
     <string name="bike">Bike</string>
     <string name="error">Looks like there are no results or something went wrong :/</string>
+    <string name="search">Search</string>
 </resources>
