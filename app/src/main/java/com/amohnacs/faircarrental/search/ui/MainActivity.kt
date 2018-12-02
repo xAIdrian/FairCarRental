@@ -1,7 +1,6 @@
 package com.amohnacs.faircarrental.search.ui
 
 import android.app.AlertDialog
-import android.app.DatePickerDialog
 import android.arch.lifecycle.Observer
 import android.databinding.DataBindingUtil
 import android.graphics.PorterDuff
@@ -14,10 +13,10 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.DatePicker
 import com.amohnacs.faircarrental.R
 import com.amohnacs.faircarrental.common.ResourceProvider
 import com.amohnacs.faircarrental.databinding.MainActivityBinding
@@ -25,13 +24,15 @@ import com.amohnacs.faircarrental.search.MainViewModel
 import com.amohnacs.faircarrental.search.ui.SortingRadioDialog.SORTING_DIALOG_SELECTION
 import java.lang.UnsupportedOperationException
 import java.util.Calendar
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 
 
 /**
  * Created by adrian mohnacs on 12/1/18
  */
-class MainActivity: AppCompatActivity(), DatePickerDialog.OnDateSetListener, SearchResultsFragment.OnListFragmentInteractionListener,
-        SortingRadioDialog.SortingDialogCallback {
+class MainActivity: AppCompatActivity(),
+        SearchResultsFragment.OnListFragmentInteractionListener,
+        SortingRadioDialog.SortingDialogCallback, DatePickerDialog.OnDateSetListener {
 
     companion object {
         private val TAG = SearchActivity::class.java.simpleName
@@ -43,7 +44,6 @@ class MainActivity: AppCompatActivity(), DatePickerDialog.OnDateSetListener, Sea
     private lateinit var binding: MainActivityBinding
 
     private var viewModel: MainViewModel? = null
-    private var searchResultFragment: SearchResultsFragment? = null
 
     private var colorChangingMenuIcon: Drawable? = null
     private var sortingIndex = 1
@@ -56,11 +56,16 @@ class MainActivity: AppCompatActivity(), DatePickerDialog.OnDateSetListener, Sea
 
     private var calendar: Calendar = Calendar.getInstance()
 
+    private var searchResultFragment: SearchResultsFragment? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.main_activity)
 
         setupViewModel()
+
+        binding.viewmodel = viewModel
+        binding.searchHeader.viewmodel = viewModel
 
         savedInstanceState?.let {
             sortingIndex = savedInstanceState.getInt(SAVED_INSTANCE_STATE_DIALOG_POSITION)
@@ -71,11 +76,13 @@ class MainActivity: AppCompatActivity(), DatePickerDialog.OnDateSetListener, Sea
             binding.searchHeader.dropoffResultTextView.text = dropOffString
         }
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        searchResultFragment = SearchResultsFragment.newInstance(1)
+        val tr = supportFragmentManager.beginTransaction()
+        tr.replace(R.id.fragment_container, searchResultFragment!!, SearchResultsFragment.TAG)
+        tr.addToBackStack(null)
+        tr.commit()
 
-        binding.toolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, R.color.transparent))
-        binding.toolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(this, R.color.white))
+        setupToolbar()
 
         binding.searchHeader.addressEditText.addTextChangedListener(
                 SearchTextValidator(binding.searchHeader.addressEditText, binding))
@@ -142,16 +149,21 @@ class MainActivity: AppCompatActivity(), DatePickerDialog.OnDateSetListener, Sea
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onDateSet(p0: DatePicker?, p1: Int, p2: Int, p3: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
+        viewModel?.dateSetChecker(view?.tag as String, year, monthOfYear, dayOfMonth)
     }
 
     override fun resultsLoading(setLoadingIndicator: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        binding.progressBar.visibility = if (setLoadingIndicator) View.VISIBLE else View.GONE
     }
 
     override fun onPositiveDialogClick(position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //they actually changed their sorting selection
+        if (sortingIndex != position) {
+            sortingIndex = position
+            val f = getDisplayedFragment()
+            f?.onPositiveDialogClick(sortingIndex)
+        }
     }
 
     private fun setupViewModel() {
@@ -204,21 +216,52 @@ class MainActivity: AppCompatActivity(), DatePickerDialog.OnDateSetListener, Sea
         })
 
         viewModel?.validInputsLaunchFragmentEvent?.observe(this, Observer { launchPackage ->
-            getDisplayedFragment()?.let {
-                it.makeCarResultsRequest(
+
+            getDisplayedFragment()?.makeCarResultsRequest(
                         launchPackage?.addressQueryString,
                         launchPackage?.pickupSelection,
                         launchPackage?.dropoffSelection
                 )
-            }
 
+        })
+
+        viewModel?.displayPickupDialogEvent?.observe(this, Observer { tag ->
+            tag?.let { showDatePickerDialog(it) }
+        })
+
+        viewModel?.displayDropoffDialogEvent?.observe(this, Observer { tag ->
+            tag?.let { showDatePickerDialog(it) }
         })
     }
 
-    fun getDisplayedFragment(): SearchResultsFragment? {
+    private fun setupToolbar() {
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        binding.toolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, R.color.transparent))
+        binding.toolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(this, R.color.white))
+    }
+
+    private fun getDisplayedFragment(): SearchResultsFragment? {
         val fragment = supportFragmentManager.findFragmentByTag(SearchResultsFragment.TAG) as? SearchResultsFragment?
         supportFragmentManager.executePendingTransactions()
         return fragment
+    }
+
+    private fun showDatePickerDialog(tag: String) {
+        val datePickerDialog = com.wdullaer.materialdatetimepicker.date.DatePickerDialog.newInstance(
+                this,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        )
+        datePickerDialog.setOnCancelListener { viewModel?.updateDatePickerActive(false) }
+        datePickerDialog.setOnDismissListener { viewModel?.updateDatePickerActive(false)  }
+        datePickerDialog.accentColor = ContextCompat.getColor(this, R.color.colorPrimary)
+        datePickerDialog.vibrate(true)
+        datePickerDialog.dismissOnPause(true)
+
+        datePickerDialog.show(fragmentManager, tag)
     }
 
     /**
@@ -227,7 +270,7 @@ class MainActivity: AppCompatActivity(), DatePickerDialog.OnDateSetListener, Sea
      */
     inner class SearchTextValidator(
             private val view: View,
-            val binding: MainActivityBinding
+            private val binding: MainActivityBinding
     ) : TextWatcher {
 
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -241,6 +284,7 @@ class MainActivity: AppCompatActivity(), DatePickerDialog.OnDateSetListener, Sea
         override fun afterTextChanged(s: Editable) {
             when (view.id) {
                 R.id.address_editText -> {
+                    //yes yes i know. this should generified
                     val addressString = binding.searchHeader.addressEditText.text.toString().trim()
                     viewModel?.validateAddress(addressString)
                 }

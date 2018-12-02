@@ -20,7 +20,7 @@ data class LaunchPackage(
 class MainViewModel(
         private val resourceProvider: ResourceProvider) : ViewModel() {
 
-    var addressIsValid: MutableLiveData<Boolean> = MutableLiveData()
+    var addressIsValid: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
     var displayPickupSelection: MutableLiveData<String> = MutableLiveData()
     var displayDropoffSelection: MutableLiveData<String> = MutableLiveData()
 
@@ -62,19 +62,22 @@ class MainViewModel(
 
     fun onSearchFabClick() {
         if(!datePickerActive) {
-            validateInputsForSearch()
             datePickerActive = true
+            validateInputsForSearch()
         }
     }
 
     fun onPickupButtonClick() {
-        displayPickupDialogEvent.value = PICKUP_DIALOG
+        if (!datePickerActive) {
+            datePickerActive = false
+            displayPickupDialogEvent.value = PICKUP_DIALOG
+        }
     }
 
     fun onDropoffButtonClick() {
         if(!datePickerActive) {
-            displayDropoffDialogEvent.value = DROPOFF_DIALOG
             datePickerActive = true
+            displayDropoffDialogEvent.value = DROPOFF_DIALOG
         }
     }
 
@@ -90,10 +93,11 @@ class MainViewModel(
         //chaning our string to a date
         var selectedDate = Date()
 
+        datePickerActive = false
+
         try {
             selectedDate = stringQueryFormat.parse(dateQueryString) ?: Date()
         } catch (e: ParseException) {
-            datePickerActive = false
 
             e.printStackTrace()
             errorEvent.value = e.message
@@ -112,24 +116,29 @@ class MainViewModel(
         }
     }
 
-    fun validateInputsForSearch() {
+    private fun validateInputsForSearch() {
         //gets our query formatted string
         if (pickupDate != null && dropoffDate != null) {
+
             datePickerActive = false
 
             val pickupSelection = stringQueryFormat.format(pickupDate)
             val dropoffSelection = stringQueryFormat.format(dropoffDate)
+            val safeAddressQueryString = addressQueryString
+
+            val addressValidated = addressIsValid.value == false // this is null or not valid
+                || safeAddressQueryString == null
+                || safeAddressQueryString.isEmpty()
 
             if (!pickupDate!!.after(yesterday)) {
                 errorEvent.value = resourceProvider.getPickupBeforeError()
+
             } else if (!dropoffDate!!.after(pickupDate)) {
                 errorEvent.value = resourceProvider.getPickupAfterError()
-            } else if (
-                !addressIsValid.value!!
-                || addressQueryString == null
-                || addressQueryString!!.isEmpty()) {
 
+            } else if (addressValidated) {
                 errorEvent.value = resourceProvider.getInvalidAddresserror()
+
             } else {
                 validInputsLaunchFragmentEvent.value =
                         LaunchPackage(addressQueryString!!, pickupSelection!!, dropoffSelection!!)
@@ -137,5 +146,9 @@ class MainViewModel(
         } else {
             errorEvent.value = resourceProvider.getDateMissingError()
         }
+    }
+
+    fun updateDatePickerActive(isActive: Boolean) {
+        datePickerActive = isActive
     }
 }
