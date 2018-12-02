@@ -6,8 +6,6 @@ https://github.com/wearefair/interview/blob/master/ios/README.md
 
 Improvements to Be Made:
 
-* Architecture Components, MVVM, and Databinding (start with Search)
-* Ensure that resources are only fetched in classes bound to the android framework (ResourceProvider)
 * Common folder can be removed if we use androidx and extend ViewModel()
 * Include a Domain Layer class (DataController/Interactor) that will get the data from the Retrofit Service and make data "fetchable" by ViewModel
 
