@@ -5,8 +5,6 @@ import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.amohnacs.common.mvvm.SingleLiveEvent
 import com.amohnacs.faircarrental.common.ResourceProvider
-import com.amohnacs.faircarrental.search.ui.SearchActivity.DROPOFF_DIALOG
-import com.amohnacs.faircarrental.search.ui.SearchActivity.PICKUP_DIALOG
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -19,12 +17,12 @@ data class LaunchPackage(
         val pickupSelection: String,
         val dropoffSelection: String)
 
-class SearchViewModel(
+class MainViewModel(
         private val resourceProvider: ResourceProvider) : ViewModel() {
 
-    private val TAG = SearchPresenter::class.java.simpleName
-
     var addressIsValid: MutableLiveData<Boolean> = MutableLiveData()
+    var displayPickupSelection: MutableLiveData<String> = MutableLiveData()
+    var displayDropoffSelection: MutableLiveData<String> = MutableLiveData()
 
     var errorEvent: SingleLiveEvent<String> = SingleLiveEvent()
     var displayPickupDialogEvent: SingleLiveEvent<String> = SingleLiveEvent()
@@ -33,26 +31,50 @@ class SearchViewModel(
 
     private var stringQueryFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
     private var yesterday: Date = Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24)
+    private var datePickerActive = false //datepickerdialog is a little laggy
+
     private var addressQueryString: String? = null
     private var pickupDate: Date? = null
     private var dropoffDate: Date? = null
 
     companion object {
+        private val TAG = SearchPresenter::class.java.simpleName
+
         private val DATE_HELPER_ZERO = "0"
+        private val PICKUP_DIALOG = "pickup_dialog"
+        private val DROPOFF_DIALOG = "dropoff_dialog"
 
         @Volatile
-        private var instance: SearchViewModel? = null
+        private var instance: MainViewModel? = null
 
         @JvmStatic
-        fun getInstance(resourceProvider: ResourceProvider): SearchViewModel? {
+        fun getInstance(resourceProvider: ResourceProvider): MainViewModel? {
             if (instance == null) {
                 synchronized(SearchPresenter::class.java) {
                     if (instance == null) {
-                        instance = SearchViewModel(resourceProvider)
+                        instance = MainViewModel(resourceProvider)
                     }
                 }
             }
             return instance
+        }
+    }
+
+    fun onSearchFabClick() {
+        if(!datePickerActive) {
+            validateInputsForSearch()
+            datePickerActive = true
+        }
+    }
+
+    fun onPickupButtonClick() {
+        displayPickupDialogEvent.value = PICKUP_DIALOG
+    }
+
+    fun onDropoffButtonClick() {
+        if(!datePickerActive) {
+            displayDropoffDialogEvent.value = DROPOFF_DIALOG
+            datePickerActive = true
         }
     }
 
@@ -69,8 +91,10 @@ class SearchViewModel(
         var selectedDate = Date()
 
         try {
-            selectedDate = stringQueryFormat?.parse(dateQueryString) ?: Date()
+            selectedDate = stringQueryFormat.parse(dateQueryString) ?: Date()
         } catch (e: ParseException) {
+            datePickerActive = false
+
             e.printStackTrace()
             errorEvent.value = e.message
         }
@@ -78,11 +102,11 @@ class SearchViewModel(
         when (viewTag) {
             PICKUP_DIALOG -> {
                 pickupDate = selectedDate
-                displayPickupDialogEvent.value = stringQueryFormat?.format(pickupDate)
+                displayPickupSelection.value = stringQueryFormat.format(pickupDate)
             }
             DROPOFF_DIALOG -> {
                 dropoffDate = selectedDate
-                displayDropoffDialogEvent.value = stringQueryFormat?.format(dropoffDate)
+                displayDropoffSelection.value = stringQueryFormat.format(dropoffDate)
             }
             else -> Log.e(TAG, "inappropriate tag for date picker dialog")
         }
@@ -91,8 +115,10 @@ class SearchViewModel(
     fun validateInputsForSearch() {
         //gets our query formatted string
         if (pickupDate != null && dropoffDate != null) {
-            val pickupSelection = stringQueryFormat?.format(pickupDate)
-            val dropoffSelection = stringQueryFormat?.format(dropoffDate)
+            datePickerActive = false
+
+            val pickupSelection = stringQueryFormat.format(pickupDate)
+            val dropoffSelection = stringQueryFormat.format(dropoffDate)
 
             if (!pickupDate!!.after(yesterday)) {
                 errorEvent.value = resourceProvider.getPickupBeforeError()
