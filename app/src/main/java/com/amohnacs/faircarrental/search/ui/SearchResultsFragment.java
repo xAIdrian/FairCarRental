@@ -10,7 +10,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,7 +72,7 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
         }
 
         presenter = SearchResultsPresenter.getInstance(getActivity());
-        adapter = new CarAdapter(carList, this, presenter);
+        adapter = new CarAdapter(carList, this, getActivity(), presenter);
     }
 
     @Override

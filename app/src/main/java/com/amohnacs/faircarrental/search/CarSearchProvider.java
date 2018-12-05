@@ -63,7 +63,7 @@ public class CarSearchProvider implements SearchResultsContract.Provider {
 
                     getCarSearchResults(callback, location, pickupSelection, dropoffSelection);
                 } else {
-                    Log.e(TAG, String.valueOf(response.errorBody()));
+                    Log.e(TAG, response.toString());
 
                     if (weakCallback != null) {
                         weakCallback.get().onCarSearchResultError("Response not successful");
@@ -86,8 +86,7 @@ public class CarSearchProvider implements SearchResultsContract.Provider {
         weakCallback = new WeakReference<>(callback);
 
         String key = BuildConfig.ApiKey;
-        Call<AmadeusResults> call = amadeusClient.getSearchResult(BuildConfig.ApiKey,
-                location.getLatitude(), location.getLongitude(), 42, pickupSelection, dropoffSelection);
+        Call<AmadeusResults> call = amadeusClient.getSearchResult(pickupSelection, dropoffSelection, location.getLatitude(), location.getLongitude(), 42, BuildConfig.ApiKey);
 
         call.enqueue(new retrofit2.Callback<AmadeusResults>() {
             @Override
@@ -97,7 +96,7 @@ public class CarSearchProvider implements SearchResultsContract.Provider {
                         weakCallback.get().onCarSearchResults(location, response.body().getAmadeusResults());
                     }
                 } else {
-                    Log.e(TAG, String.valueOf(response.errorBody()));
+                    Log.e(TAG, response.toString());
 
                     if (weakCallback != null) {
                         weakCallback.get().onCarSearchResultError("Response not successful");

@@ -15,11 +15,11 @@ public interface AmadeusClient {
 //https://api.sandbox.amadeus.com/v1.2/cars/search-circle
     @GET("v1.2/cars/search-circle")
     Call<AmadeusResults> getSearchResult(
-            @Query("apikey") String apiKey,
+            @Query("pick_up") String pick_up, //format : 2018-06-07
+            @Query("drop_off") String drop_off, //format : 2018-06-08x
             @Query("latitude") float latitude,
             @Query("longitude") float longitude,
             @Query("radius") int radius,
-            @Query("pick_up") String pick_up, //format : 2018-06-07
-            @Query("drop_off") String drop_off //format : 2018-06-08
+            @Query("apikey") String apiKey
     );
 }
