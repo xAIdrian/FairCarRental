@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.amohnacs.common.mvp.BasePresenter;
+import com.amohnacs.faircarrental.BuildConfig;
 import com.amohnacs.faircarrental.R;
 import com.amohnacs.faircarrental.search.contracts.SearchContract;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -28,8 +29,8 @@ public class SearchPresenter extends BasePresenter<SearchContract.View> implemen
 
     private static final String DATE_HELPER_ZERO = "0";
 
-    SimpleDateFormat stringQueryFormat;
-    Date yesterday;
+    private SimpleDateFormat stringQueryFormat;
+    private Date yesterday;
 
     private boolean addressIsValid = false;
     private Date pickupDate;
@@ -98,7 +99,9 @@ public class SearchPresenter extends BasePresenter<SearchContract.View> implemen
                 getMvpView().displayDateSelection(view.getTag(), stringQueryFormat.format(selectedDate));
             }
         } else {
-            Log.e(TAG, "inappropriate tag for date picker dialog");
+            if (BuildConfig.DEBUG) {
+                Log.e(TAG, "inappropriate tag for date picker dialog");
+            }
         }
     }
 

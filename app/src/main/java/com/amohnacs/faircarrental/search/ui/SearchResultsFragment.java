@@ -185,8 +185,10 @@ public class SearchResultsFragment extends MvpFragment<SearchResultsPresenter, S
         }
     }
 
-    private void buildSnackBar(@StringRes @NonNull int stringRes) {
-        Snackbar.make(getView(), getActivity().getString(stringRes), Snackbar.LENGTH_LONG).show();
+    private void buildSnackBar(@StringRes int stringRes) {
+        if (getActivity() != null && getView() != null) {
+            Snackbar.make(getView(), getActivity().getString(stringRes), Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override

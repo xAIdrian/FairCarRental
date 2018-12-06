@@ -1,5 +1,6 @@
 package com.amohnacs.faircarrental.navigation;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 
@@ -23,12 +24,12 @@ import java.util.List;
 /**
  * Created by adrianmohnacs on 4/23/18.
  */
-
+@SuppressLint("StaticFieldLeak") //possible leak from RecyclerView handled by killing this task in Activity's onStop()
 public class NavigationAsyncTask extends AsyncTask<NavigationRequestObject, Void, DirectionsResult> {
 
     private final GeoApiContext context;
     private final GoogleMap map;
-    private final RecyclerView recyclerView; //possible leak handled by killing this task in Activity's onStop()
+    private final RecyclerView recyclerView;
 
     NavigationAsyncTask(GeoApiContext context, GoogleMap map, RecyclerView recyclerView) {
         this.context = context;

@@ -34,7 +34,10 @@ public class SortingRadioDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         Bundle bundle = getArguments();
-        int passedInPosition = bundle.getInt(SORTING_DIALOG_SELECTION);
+        int passedInPosition = 0;
+        if (bundle != null) {
+            passedInPosition = bundle.getInt(SORTING_DIALOG_SELECTION);
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -49,8 +52,7 @@ public class SortingRadioDialog extends DialogFragment {
 
         builder.setNegativeButton(getActivity().getString(R.string.CANCEL), (dialog, which) -> dialog.dismiss());
 
-        AlertDialog sortingDialog = builder.create();
-        return sortingDialog;
+        return builder.create();
     }
 
     @Override

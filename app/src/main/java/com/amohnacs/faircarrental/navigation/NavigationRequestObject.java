@@ -8,7 +8,7 @@ public class NavigationRequestObject {
     private String originLatLng;
     private String destinationLatLng;
 
-    public NavigationRequestObject(TravelMode mode, String originLatLng, String destinationLatLng) {
+    NavigationRequestObject(TravelMode mode, String originLatLng, String destinationLatLng) {
         this.mode = mode;
         this.originLatLng = originLatLng;
         this.destinationLatLng = destinationLatLng;

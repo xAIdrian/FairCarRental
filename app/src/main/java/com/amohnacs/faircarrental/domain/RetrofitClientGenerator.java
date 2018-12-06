@@ -18,7 +18,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * and can easily build variations of our Retrofit Clients.
  */
 public class RetrofitClientGenerator {
-    private static final String TAG = RetrofitClientGenerator.class.getSimpleName();
 
     private static final String AMADEUS_ROOT_ENDPOINT = "https://api.sandbox.amadeus.com/";
     //https://api.sandbox.amadeus.com/v1.2/cars/search-circle

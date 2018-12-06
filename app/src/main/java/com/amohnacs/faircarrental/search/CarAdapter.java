@@ -1,6 +1,7 @@
 package com.amohnacs.faircarrental.search;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,26 +32,24 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarResultViewHol
 
     private final List<Car> values;
     private final RecyclerClickListener recyclerClickListener;
-    private final Context context;
     private final SearchResultsPresenter presenter;
 
     public CarAdapter(ArrayList<Car> items, RecyclerClickListener listener,
                       Context context, SearchResultsPresenter presenter) {
         values = items;
         recyclerClickListener = listener;
-        this.context = context;
         this.presenter = presenter;
     }
 
     @Override
-    public CarResultViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CarResultViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.search_results_fragment_item, parent, false);
         return new CarResultViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final CarResultViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final CarResultViewHolder holder, int position) {
         Car car = values.get(position);
         VehicleInfo vi = car.getVehicleInfo();
 
@@ -62,9 +61,11 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarResultViewHol
                 + ", " + address.getPostalCode();
         holder.setAddress(addressString);
 
-        holder.setCalculatedDistance(
-                getDistanceString(car.getAmadeusLocation(), presenter.getUserLatLngLocation())
-        );
+        if (presenter.getUserLatLngLocation() != null) {
+            holder.setCalculatedDistance(
+                    getDistanceString(car.getAmadeusLocation(), presenter.getUserLatLngLocation())
+            );
+        }
 
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
         String output = formatter.format(car.getEstimatedTotal().getAmount());
@@ -76,8 +77,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarResultViewHol
     public int getItemCount() {
         return values.size();
     }
-
-    //////////////
 
     class CarResultViewHolder extends RecyclerView.ViewHolder {
 

@@ -1,5 +1,6 @@
 package com.amohnacs.faircarrental.navigation;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -25,14 +26,14 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
     }
 
     @Override
-    public StepsAdapter.StepViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public StepsAdapter.StepViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.navigation_activity_item, parent, false);
         return new StepsAdapter.StepViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final StepsAdapter.StepViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final StepsAdapter.StepViewHolder holder, int position) {
         DirectionsStep step = values[position];
 
         holder.setDistance(step.distance.toString());
@@ -44,8 +45,6 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
     public int getItemCount() {
         return values.length;
     }
-
-    //////////////
 
     class StepViewHolder extends RecyclerView.ViewHolder {
 

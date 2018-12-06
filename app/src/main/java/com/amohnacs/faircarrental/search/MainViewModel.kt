@@ -4,6 +4,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.amohnacs.common.mvvm.SingleLiveEvent
+import com.amohnacs.faircarrental.BuildConfig
 import com.amohnacs.faircarrental.common.ResourceProvider
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -112,15 +113,14 @@ class MainViewModel(
                 dropoffDate = selectedDate
                 displayDropoffSelection.value = stringQueryFormat.format(dropoffDate)
             }
-            else -> Log.e(TAG, "inappropriate tag for date picker dialog")
+            else -> { if(BuildConfig.DEBUG){Log.e(TAG, "inappropriate tag for date picker dialog")}}
         }
     }
 
     private fun validateInputsForSearch() {
         //gets our query formatted string
+        datePickerActive = false
         if (pickupDate != null && dropoffDate != null) {
-
-            datePickerActive = false
 
             val pickupSelection = stringQueryFormat.format(pickupDate)
             val dropoffSelection = stringQueryFormat.format(dropoffDate)

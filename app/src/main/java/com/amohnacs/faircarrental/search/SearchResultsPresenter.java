@@ -21,7 +21,6 @@ import java.util.List;
  */
 
 public class SearchResultsPresenter extends BasePresenter<SearchResultsContract.View> implements SearchResultsContract.Presenter, SearchResultsContract.Provider.Callback {
-    private static final String TAG = SearchResultsPresenter.class.getSimpleName();
 
     private static volatile SearchResultsPresenter instance;
 
@@ -59,7 +58,6 @@ public class SearchResultsPresenter extends BasePresenter<SearchResultsContract.
 
     @Override
     public void getCars(String addressQueryString, String pickupSelection, String dropoffSelection) {
-        this.sortingIndex = sortingIndex;
         String apiFriendlyAddress = addressQueryString.replace(" ", " +");
         provider.carSearch(this, apiFriendlyAddress, pickupSelection, dropoffSelection);
     }
@@ -137,7 +135,7 @@ public class SearchResultsPresenter extends BasePresenter<SearchResultsContract.
     @Override
     public void sortCarsByDistanceDescending() {
         if (resultsForSorting != null && !resultsForSorting.isEmpty()) {
-            Collections.sort(resultsForSorting, (car1, car2) -> {
+            resultsForSorting.sort((car1, car2) -> {
                 int inter1 = (int) car1.getUserDistanceToThisCar();
                 int inter2 = (int) car2.getUserDistanceToThisCar();
 
@@ -152,7 +150,7 @@ public class SearchResultsPresenter extends BasePresenter<SearchResultsContract.
     @Override
     public void sortCarsByPriceDescending() {
         if (resultsForSorting != null && !resultsForSorting.isEmpty()) {
-            Collections.sort(resultsForSorting, (car1, car2) ->
+            resultsForSorting.sort((car1, car2) ->
                     (int) (car2.getEstimatedTotal().getAmount() - car1.getEstimatedTotal().getAmount()));
             if (isViewAttached()) {
                 getMvpView().updateCarSearchResults(resultsForSorting);
@@ -163,7 +161,7 @@ public class SearchResultsPresenter extends BasePresenter<SearchResultsContract.
     @Override
     public void sortCarsByCompanyAscending() {
         if (resultsForSorting != null && !resultsForSorting.isEmpty()) {
-            Collections.sort(resultsForSorting, Comparator.comparing(Car::getCompanyName));
+            resultsForSorting.sort(Comparator.comparing(Car::getCompanyName));
             if (isViewAttached()) {
                 getMvpView().updateCarSearchResults(resultsForSorting);
             }
@@ -173,7 +171,7 @@ public class SearchResultsPresenter extends BasePresenter<SearchResultsContract.
     @Override
     public void sortCarsByDistanceAscending() {
         if (resultsForSorting != null && !resultsForSorting.isEmpty()) {
-            Collections.sort(resultsForSorting, (car1, car2) -> {
+            resultsForSorting.sort((car1, car2) -> {
                 int inter1 = (int) car1.getUserDistanceToThisCar();
                 int inter2 = (int) car2.getUserDistanceToThisCar();
 
@@ -188,7 +186,7 @@ public class SearchResultsPresenter extends BasePresenter<SearchResultsContract.
     @Override
     public void sortCarsByPriceAscending() {
         if (resultsForSorting != null && !resultsForSorting.isEmpty()) {
-            Collections.sort(resultsForSorting, (car1, car2) ->
+            resultsForSorting.sort((car1, car2) ->
                     (int) (car1.getEstimatedTotal().getAmount() - car2.getEstimatedTotal().getAmount()));
             if (isViewAttached()) {
                 getMvpView().updateCarSearchResults(resultsForSorting);

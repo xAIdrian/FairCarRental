@@ -84,7 +84,6 @@ public class DetailActivity extends AppCompatActivity {
     private GoogleMap map;
 
     private Car focusedCar;
-    private VehicleInfo vi;
     private LatLngLocation userLocation;
     private RateAdapter adapter;
 
@@ -111,12 +110,14 @@ public class DetailActivity extends AppCompatActivity {
             focusedCar = savedInstanceState.getParcelable(SAVED_INSTANCE_STATE_CAR);
             userLocation = savedInstanceState.getParcelable(SAVED_INSTANCE_STATE_USER_LOCATION);
         }
-        vi = focusedCar.getVehicleInfo();
+        VehicleInfo vi = focusedCar.getVehicleInfo();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Near " + focusedCar.getAddress().getLine1());
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Near " + focusedCar.getAddress().getLine1());
+        }
 
         //google maps setup
         mapView.onCreate(null);
@@ -164,15 +165,12 @@ public class DetailActivity extends AppCompatActivity {
 
         Image image = focusedCar.getImage();
         if (image != null) {
-            //// TODO: 4/24/18
+            //// TODO: 4/24/18 placeholder
         }
 
-        navFab.setOnClickListener(v -> {
-
-            startActivity(NavigationActivity.getStartIntent(
-                    this, userLocation, focusedCar.getAmadeusLocation())
-            );
-        });
+        navFab.setOnClickListener(v -> startActivity(NavigationActivity.getStartIntent(
+                this, userLocation, focusedCar.getAmadeusLocation())
+        ));
     }
 
     @Override
